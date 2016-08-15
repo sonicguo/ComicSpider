@@ -20,6 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CEC724
 		..\ComicSpider_2\.nuget\NuGet.targets = ..\ComicSpider_2\.nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicCrawler", "ComicCrawler\ComicCrawler.csproj", "{7ABE2001-E9B2-416C-A45D-031E8348C757}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlAgilityPack", "HtmlAgilityPack\HtmlAgilityPack.csproj", "{193BB801-054F-4729-9D5D-FCE1E32594BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +50,14 @@ Global
 		{61648674-8BE9-4CC6-BFFE-557C0CE54FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61648674-8BE9-4CC6-BFFE-557C0CE54FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61648674-8BE9-4CC6-BFFE-557C0CE54FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ABE2001-E9B2-416C-A45D-031E8348C757}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ABE2001-E9B2-416C-A45D-031E8348C757}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ABE2001-E9B2-416C-A45D-031E8348C757}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ABE2001-E9B2-416C-A45D-031E8348C757}.Release|Any CPU.Build.0 = Release|Any CPU
+		{193BB801-054F-4729-9D5D-FCE1E32594BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{193BB801-054F-4729-9D5D-FCE1E32594BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{193BB801-054F-4729-9D5D-FCE1E32594BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{193BB801-054F-4729-9D5D-FCE1E32594BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
