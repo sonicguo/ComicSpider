@@ -10,6 +10,7 @@ namespace ComicSpider
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
