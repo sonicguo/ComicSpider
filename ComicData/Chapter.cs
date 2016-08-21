@@ -12,16 +12,14 @@ namespace ComicData
     using System;
     using System.Collections.Generic;
     
-    public partial class ComicTable
+    public partial class Chapter
     {
+        public int ChapterID { get; set; }
         public System.Guid ComicID { get; set; }
-        public string ComicName { get; set; }
-        public int SiteID { get; set; }
+        public string Name { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }
-        public Nullable<int> Rating { get; set; }
-    
-        public virtual ComicTable ComicTable1 { get; set; }
-        public virtual ComicTable ComicTable2 { get; set; }
+        public System.Guid ChapterGUID { get; set; }
+        public int TotalPage { get; set; }
     }
 }

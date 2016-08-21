@@ -13,7 +13,7 @@ namespace ComicData
 
         public DmzjBCLControl()
         {
-            var site = from r in m_DBEntity.ComicSiteTable
+            var site = from r in m_DBEntity.ComicSite
                        where r.SiteName == "dmzj"
                        select new
                        {

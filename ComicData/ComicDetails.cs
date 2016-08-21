@@ -12,14 +12,16 @@ namespace ComicData
     using System;
     using System.Collections.Generic;
     
-    public partial class ComicEpisode
+    public partial class ComicDetails
     {
-        public int EpisodeID { get; set; }
         public System.Guid ComicID { get; set; }
-        public string Name { get; set; }
-        public string URL { get; set; }
+        public Nullable<decimal> Rating { get; set; }
+        public string Author { get; set; }
+        public Nullable<bool> Status { get; set; }
+        public Nullable<decimal> Popularity { get; set; }
+        public Nullable<decimal> Hits { get; set; }
+        public Nullable<decimal> SubscriptionCount { get; set; }
+        public Nullable<decimal> Tweet { get; set; }
         public string Description { get; set; }
-        public System.Guid EpisodeGUID { get; set; }
-        public int TotalPage { get; set; }
     }
 }

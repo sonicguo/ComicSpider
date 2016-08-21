@@ -10,11 +10,11 @@ namespace ComicBCL
 {
     public class DmzjBCLOperator
     {
-        private ComicSiteTable dmzjSite = null;
+        private ComicSite dmzjSite = null;
 
         #region Properties
 
-        public ComicSiteTable SiteInfo
+        public ComicSite SiteInfo
         {
             get { return dmzjSite; }
         }
@@ -85,6 +85,11 @@ namespace ComicBCL
             }
         }
 
+        public void UpdateComic()
+        {
+
+        }
+
         #endregion
 
 
@@ -95,20 +100,20 @@ namespace ComicBCL
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
 
-                var result = (from r in m_DBEntity.ComicSiteTable
+                var result = (from r in m_DBEntity.ComicSite
                               where r.SiteName == "dmzj"
                               select r).FirstOrDefault();
 
                 ;
                 if (result == null)
                 {
-                    dmzjSite = new ComicSiteTable()
+                    dmzjSite = new ComicSite()
                     {
                         SiteName = "dmzj",
                         Description = @"动漫之家",
                         URL = @"http://www.dmzj.com"
                     };
-                    m_DBEntity.ComicSiteTable.Add(dmzjSite);
+                    m_DBEntity.ComicSite.Add(dmzjSite);
                     m_DBEntity.SaveChanges();
                 }
                 else

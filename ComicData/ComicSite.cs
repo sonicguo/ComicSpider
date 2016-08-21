@@ -12,13 +12,11 @@ namespace ComicData
     using System;
     using System.Collections.Generic;
     
-    public partial class Page
+    public partial class ComicSite
     {
-        public System.Guid PageGUID { get; set; }
-        public Nullable<System.Guid> EpisodeGUID { get; set; }
-        public int PageID { get; set; }
+        public int SiteID { get; set; }
+        public string SiteName { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }
-        public System.Guid ChapterGUID { get; set; }
     }
 }

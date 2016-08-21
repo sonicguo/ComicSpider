@@ -54,39 +54,48 @@
   <ItemGroup>
     <Compile Include="Category.cs">
       <DependentUpon>ComicDBModule.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Chapter.cs">
+      <DependentUpon>ComicDBModule.tt</DependentUpon>
     </Compile>
     <Compile Include="Class1.cs" />
+    <Compile Include="Comic.cs">
+      <DependentUpon>ComicDBModule.tt</DependentUpon>
+    </Compile>
     <Compile Include="ComicDBModule.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ComicDBModule.Context.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="ComicDBModule.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ComicDBModule.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="ComicDBModule.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ComicDBModule.edmx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="ComicEpisode.cs">
+    <Compile Include="ComicDetails.cs">
       <DependentUpon>ComicDBModule.tt</DependentUpon>
     </Compile>
-    <Compile Include="ComicSiteTable.cs">
-      <DependentUpon>ComicDBModule.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ComicTable.cs">
+    <Compile Include="ComicSite.cs">
       <DependentUpon>ComicDBModule.tt</DependentUpon>
     </Compile>
     <Compile Include="DmzjBCLControl.cs" />
     <Compile Include="Page.cs">
       <DependentUpon>ComicDBModule.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteCategory.cs">
       <DependentUpon>ComicDBModule.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -94,9 +103,11 @@
     <EntityDeploy Include="ComicDBModule.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ComicDBModule.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EntityDeploy>
     <None Include="ComicDBModule.edmx.diagram">
       <DependentUpon>ComicDBModule.edmx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -108,11 +119,13 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ComicDBModule.edmx</DependentUpon>
       <LastGenOutput>ComicDBModule.Context.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ComicDBModule.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ComicDBModule.edmx</DependentUpon>
       <LastGenOutput>ComicDBModule.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -12,11 +12,15 @@ namespace ComicData
     using System;
     using System.Collections.Generic;
     
-    public partial class ComicSiteTable
+    public partial class Comic
     {
+        public System.Guid ComicID { get; set; }
+        public string ComicName { get; set; }
         public int SiteID { get; set; }
-        public string SiteName { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }
+    
+        public virtual Comic Comic1 { get; set; }
+        public virtual Comic Comic2 { get; set; }
     }
 }
