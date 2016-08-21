@@ -80,8 +80,10 @@ namespace Abot.Crawler
             if (robotsDotTextCrawlDelayInSecs > 0 || _crawlContext.CrawlConfiguration.MinCrawlDelayPerDomainMilliSeconds > 0)
                 PageCrawlStarting += (s, e) => _domainRateLimiter.RateLimit(e.PageToCrawl.Uri);
 
+
             return base.Crawl(uri, cancellationTokenSource);
         }
+
 
         protected override bool ShouldCrawlPage(PageToCrawl pageToCrawl)
         {

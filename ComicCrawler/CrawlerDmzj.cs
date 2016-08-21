@@ -15,7 +15,7 @@ namespace ComicCrawler
     {
         public CrawlerDmzj()
         {
-
+            //this.m_Crawler
         }
     }
 }

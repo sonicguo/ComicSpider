@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ComicSpiderDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="ComicEpisode">
+          <Key>
+            <PropertyRef Name="EpisodeID" />
+            <PropertyRef Name="ComicID" />
+          </Key>
+          <Property Name="EpisodeID" Type="int" Nullable="false" />
+          <Property Name="ComicID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="EpisodeGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TotalPage" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ComicSiteTable">
+          <Key>
+            <PropertyRef Name="SiteID" />
+          </Key>
+          <Property Name="SiteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SiteName" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="ComicTable">
+          <Key>
+            <PropertyRef Name="ComicID" />
+          </Key>
+          <Property Name="ComicID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ComicName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SiteID" Type="int" Nullable="false" />
+          <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Rating" Type="int" />
+        </EntityType>
+        <EntityType Name="Page">
+          <Key>
+            <PropertyRef Name="PageGUID" />
+          </Key>
+          <Property Name="PageGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="EpisodeGUID" Type="uniqueidentifier" />
+          <Property Name="PageID" Type="int" />
+          <Property Name="URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="SiteCategory">
+          <Key>
+            <PropertyRef Name="SiteID" />
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="SiteID" Type="int" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK_ComicTable_ComicTable">
+          <End Role="ComicTable" Type="Self.ComicTable" Multiplicity="1" />
+          <End Role="ComicTable1" Type="Self.ComicTable" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ComicTable">
+              <PropertyRef Name="ComicID" />
+            </Principal>
+            <Dependent Role="ComicTable1">
+              <PropertyRef Name="ComicID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ComicSpiderDBModelStoreContainer">
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ComicEpisode" EntityType="Self.ComicEpisode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ComicSiteTable" EntityType="Self.ComicSiteTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ComicTable" EntityType="Self.ComicTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Page" EntityType="Self.Page" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SiteCategory" EntityType="Self.SiteCategory" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ComicTable_ComicTable" Association="Self.FK_ComicTable_ComicTable">
+            <End Role="ComicTable" EntitySet="ComicTable" />
+            <End Role="ComicTable1" EntitySet="ComicTable" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ComicSpiderDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ComicEpisode">
+          <Key>
+            <PropertyRef Name="EpisodeID" />
+            <PropertyRef Name="ComicID" />
+          </Key>
+          <Property Name="EpisodeID" Type="Int32" Nullable="false" />
+          <Property Name="ComicID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EpisodeGUID" Type="Guid" Nullable="false" />
+          <Property Name="TotalPage" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ComicSiteTable">
+          <Key>
+            <PropertyRef Name="SiteID" />
+          </Key>
+          <Property Name="SiteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SiteName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ComicTable">
+          <Key>
+            <PropertyRef Name="ComicID" />
+          </Key>
+          <Property Name="ComicID" Type="Guid" Nullable="false" />
+          <Property Name="ComicName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SiteID" Type="Int32" Nullable="false" />
+          <Property Name="URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ComicTable1" Relationship="Self.FK_ComicTable_ComicTable" FromRole="ComicTable" ToRole="ComicTable1" />
+          <NavigationProperty Name="ComicTable2" Relationship="Self.FK_ComicTable_ComicTable" FromRole="ComicTable1" ToRole="ComicTable" />
+          <Property Name="Rating" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Page">
+          <Key>
+            <PropertyRef Name="PageGUID" />
+          </Key>
+          <Property Name="PageGUID" Type="Guid" Nullable="false" />
+          <Property Name="EpisodeGUID" Type="Guid" />
+          <Property Name="PageID" Type="Int32" />
+          <Property Name="URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SiteCategory">
+          <Key>
+            <PropertyRef Name="SiteID" />
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="SiteID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_ComicTable_ComicTable">
+          <End Role="ComicTable" Type="Self.ComicTable" Multiplicity="1" />
+          <End Role="ComicTable1" Type="Self.ComicTable" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ComicTable">
+              <PropertyRef Name="ComicID" />
+            </Principal>
+            <Dependent Role="ComicTable1">
+              <PropertyRef Name="ComicID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ComicSpiderDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Category" EntityType="Self.Category" />
+          <EntitySet Name="ComicEpisode" EntityType="Self.ComicEpisode" />
+          <EntitySet Name="ComicSiteTable" EntityType="Self.ComicSiteTable" />
+          <EntitySet Name="ComicTable" EntityType="Self.ComicTable" />
+          <EntitySet Name="Page" EntityType="Self.Page" />
+          <EntitySet Name="SiteCategory" EntityType="Self.SiteCategory" />
+          <AssociationSet Name="FK_ComicTable_ComicTable" Association="Self.FK_ComicTable_ComicTable">
+            <End Role="ComicTable" EntitySet="ComicTable" />
+            <End Role="ComicTable1" EntitySet="ComicTable" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ComicSpiderDBModelStoreContainer" CdmEntityContainer="ComicSpiderDBEntities">
+          <EntitySetMapping Name="Category">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ComicEpisode">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.ComicEpisode">
+              <MappingFragment StoreEntitySet="ComicEpisode">
+                <ScalarProperty Name="EpisodeID" ColumnName="EpisodeID" />
+                <ScalarProperty Name="ComicID" ColumnName="ComicID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="EpisodeGUID" ColumnName="EpisodeGUID" />
+                <ScalarProperty Name="TotalPage" ColumnName="TotalPage" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ComicSiteTable">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.ComicSiteTable">
+              <MappingFragment StoreEntitySet="ComicSiteTable">
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ComicTable">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.ComicTable">
+              <MappingFragment StoreEntitySet="ComicTable">
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="ComicID" ColumnName="ComicID" />
+                <ScalarProperty Name="ComicName" ColumnName="ComicName" />
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Page">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.Page">
+              <MappingFragment StoreEntitySet="Page">
+                <ScalarProperty Name="PageGUID" ColumnName="PageGUID" />
+                <ScalarProperty Name="EpisodeGUID" ColumnName="EpisodeGUID" />
+                <ScalarProperty Name="PageID" ColumnName="PageID" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SiteCategory">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.SiteCategory">
+              <MappingFragment StoreEntitySet="SiteCategory">
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
