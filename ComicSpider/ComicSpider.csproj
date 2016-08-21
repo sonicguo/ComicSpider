@@ -59,6 +59,10 @@
       <Project>{fde9fab3-a383-4e1b-87c1-9953b7d7c4f8}</Project>
       <Name>ComicBCL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ComicCrawler\ComicCrawler.csproj">
+      <Project>{7ABE2001-E9B2-416C-A45D-031E8348C757}</Project>
+      <Name>ComicCrawler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ComicData\ComicData.csproj">
       <Project>{47700a74-867c-4f2e-898b-65ff973513da}</Project>
       <Name>ComicData</Name>

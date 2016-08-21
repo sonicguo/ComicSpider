@@ -19,6 +19,11 @@ namespace ComicData
             : base("name=ComicSpiderDBEntities")
         {
         }
+    
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            throw new UnintentionalCodeFirstException();
+        }
 
         public void FixEfProviderServicesProblem()
         {
@@ -30,11 +35,6 @@ namespace ComicData
             var instance = System.Data.Entity.SqlServer.SqlProviderServices.Instance;
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            throw new UnintentionalCodeFirstException();
-        }
-    
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<ComicEpisode> ComicEpisode { get; set; }
         public virtual DbSet<ComicSiteTable> ComicSiteTable { get; set; }

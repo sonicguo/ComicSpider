@@ -53,6 +53,10 @@
       <Project>{fde9fab3-a383-4e1b-87c1-9953b7d7c4f8}</Project>
       <Name>ComicBCL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ComicData\ComicData.csproj">
+      <Project>{47700A74-867C-4F2E-898B-65FF973513DA}</Project>
+      <Name>ComicData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HtmlAgilityPack\HtmlAgilityPack.csproj">
       <Project>{193bb801-054f-4729-9d5d-fce1e32594bf}</Project>
       <Name>HtmlAgilityPack</Name>

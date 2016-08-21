@@ -9,6 +9,7 @@ using Abot.Poco;
 
 using ComicData;
 using ComicBCL;
+using ComicCrawler;
 
 namespace ComicSpider
 {
@@ -16,9 +17,12 @@ namespace ComicSpider
     {
         static void Main(string[] args)
         {
-            IWebCrawler crawler;
+            //IWebCrawler crawler;
 
-            ComicBCL.DmzjBCLOperator control = new ComicBCL.DmzjBCLOperator();
+            //ComicBCL.DmzjBCLOperator control = new ComicBCL.DmzjBCLOperator();
+
+            CrawlerDmzj crawler = new CrawlerDmzj();
+            crawler.CrawlCategory();
 
         }
 

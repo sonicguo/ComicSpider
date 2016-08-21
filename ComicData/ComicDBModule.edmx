@@ -64,6 +64,8 @@
           <Property Name="SiteID" Type="int" Nullable="false" />
           <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <Association Name="FK_ComicTable_ComicTable">
           <End Role="ComicTable" Type="Self.ComicTable" Multiplicity="1" />
@@ -154,6 +156,8 @@
           <Property Name="SiteID" Type="Int32" Nullable="false" />
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_ComicTable_ComicTable">
           <End Role="ComicTable" Type="Self.ComicTable" Multiplicity="1" />
@@ -243,6 +247,8 @@
           <EntitySetMapping Name="SiteCategory">
             <EntityTypeMapping TypeName="ComicSpiderDBModel.SiteCategory">
               <MappingFragment StoreEntitySet="SiteCategory">
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
                 <ScalarProperty Name="SiteID" ColumnName="SiteID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />

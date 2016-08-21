@@ -17,5 +17,7 @@ namespace ComicData
         public int SiteID { get; set; }
         public int CategoryID { get; set; }
         public string Description { get; set; }
+        public string URL { get; set; }
+        public string CategoryName { get; set; }
     }
 }
