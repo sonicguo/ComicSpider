@@ -57,7 +57,6 @@ namespace ComicBCL
                     m_DBEntity.Category.Add(cateInfo);
                     m_DBEntity.SaveChanges();
 
-                    //cateInfo = (from c in m_DBEntity.Category where c.CategoryName == cateName select c).FirstOrDefault();
                 }
 
                 var siteCateInfo = (from r in m_DBEntity.SiteCategory
@@ -81,9 +80,9 @@ namespace ComicBCL
                 m_DBEntity.SiteCategory.Add(siteCateInfo);
                 m_DBEntity.SaveChanges();
 
-
             }
         }
+
 
         public void UpdateComic()
         {
@@ -123,7 +122,7 @@ namespace ComicBCL
             }
         }
 
-        private void InsertCategoryInfo(string cateName, string description)
+        private void UpdateCategoryInfo(string cateName, string description)
         {
 
         }

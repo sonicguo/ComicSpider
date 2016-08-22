@@ -14,8 +14,8 @@ namespace ComicCrawler
     {
         protected IWebCrawler m_Crawler;
         public abstract void CrawlCategory();
-        public abstract void CrawlComicEpisode();
-        public abstract void CrawlComicEpisodePage();
+        public abstract void CrawlComicChapter();
+        public abstract void CrawlComicChapterPage();
 
     }
 }
