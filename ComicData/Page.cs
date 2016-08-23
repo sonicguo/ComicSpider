@@ -15,10 +15,9 @@ namespace ComicData
     public partial class Page
     {
         public System.Guid PageGUID { get; set; }
-        public Nullable<System.Guid> EpisodeGUID { get; set; }
+        public System.Guid ChapterGUID { get; set; }
         public int PageID { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }
-        public System.Guid ChapterGUID { get; set; }
     }
 }

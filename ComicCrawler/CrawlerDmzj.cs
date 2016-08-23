@@ -23,6 +23,7 @@ namespace ComicCrawler
         public CrawlerDmzj()
         {
             m_BCL = new DmzjBCLOperator();
+
         }
 
         public override void CrawlCategory()

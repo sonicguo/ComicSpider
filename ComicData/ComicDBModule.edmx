@@ -90,10 +90,9 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
         <EntityType Name="SiteCategoryIndexer">
           <Key>
             <PropertyRef Name="SiteID" />
-            <PropertyRef Name="CategoryIndexerID" />
+            <PropertyRef Name="URL" />
           </Key>
           <Property Name="SiteID" Type="int" Nullable="false" />
-          <Property Name="CategoryIndexerID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
         </EntityType>
@@ -135,17 +134,6 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
           <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="Page">
-          <Key>
-            <PropertyRef Name="PageGUID" />
-          </Key>
-          <Property Name="PageGUID" Type="Guid" Nullable="false" />
-          <Property Name="EpisodeGUID" Type="Guid" />
-          <Property Name="PageID" Type="Int32" Nullable="false" />
-          <Property Name="URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ChapterGUID" Type="Guid" Nullable="false" />
-        </EntityType>
         <EntityType Name="SiteCategory">
           <Key>
             <PropertyRef Name="SiteID" />
@@ -159,7 +147,6 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
         </EntityType>
         <EntityContainer Name="ComicSpiderDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Category" EntityType="Self.Category" />
-          <EntitySet Name="Page" EntityType="Self.Page" />
           <EntitySet Name="SiteCategory" EntityType="Self.SiteCategory" />
           <EntitySet Name="Chapter" EntityType="ComicSpiderDBModel.Chapter" />
           <EntitySet Name="Comic" EntityType="ComicSpiderDBModel.Comic" />
@@ -169,6 +156,7 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
             <End Role="Comic" EntitySet="Comic" />
             <End Role="Comic1" EntitySet="Comic" />
           </AssociationSet>
+          <EntitySet Name="Page" EntityType="ComicSpiderDBModel.Page" />
           <EntitySet Name="SiteCategoryIndexer" EntityType="ComicSpiderDBModel.SiteCategoryIndexer" />
         </EntityContainer>
         <EntityType Name="Chapter">
@@ -231,13 +219,22 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Page">
+          <Key>
+            <PropertyRef Name="PageGUID" />
+          </Key>
+          <Property Name="PageGUID" Type="Guid" Nullable="false" />
+          <Property Name="ChapterGUID" Type="Guid" Nullable="false" />
+          <Property Name="PageID" Type="Int32" Nullable="false" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="SiteCategoryIndexer">
           <Key>
             <PropertyRef Name="SiteID" />
-            <PropertyRef Name="CategoryIndexerID" />
+            <PropertyRef Name="URL" />
           </Key>
           <Property Name="SiteID" Type="Int32" Nullable="false" />
-          <Property Name="CategoryIndexerID" Type="Guid" Nullable="false" />
           <Property Name="URL" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -252,17 +249,6 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
               <MappingFragment StoreEntitySet="Category">
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Page">
-            <EntityTypeMapping TypeName="ComicSpiderDBModel.Page">
-              <MappingFragment StoreEntitySet="Page">
-                <ScalarProperty Name="ChapterGUID" ColumnName="ChapterGUID" />
-                <ScalarProperty Name="PageGUID" ColumnName="PageGUID" />
-                <ScalarProperty Name="PageID" ColumnName="PageID" />
-                <ScalarProperty Name="URL" ColumnName="URL" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -327,12 +313,22 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Page">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.Page">
+              <MappingFragment StoreEntitySet="Page">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="PageID" ColumnName="PageID" />
+                <ScalarProperty Name="ChapterGUID" ColumnName="ChapterGUID" />
+                <ScalarProperty Name="PageGUID" ColumnName="PageGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="SiteCategoryIndexer">
             <EntityTypeMapping TypeName="ComicSpiderDBModel.SiteCategoryIndexer">
               <MappingFragment StoreEntitySet="SiteCategoryIndexer">
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="URL" ColumnName="URL" />
-                <ScalarProperty Name="CategoryIndexerID" ColumnName="CategoryIndexerID" />
                 <ScalarProperty Name="SiteID" ColumnName="SiteID" />
               </MappingFragment>
             </EntityTypeMapping>

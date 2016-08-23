@@ -15,7 +15,6 @@ namespace ComicData
     public partial class SiteCategoryIndexer
     {
         public int SiteID { get; set; }
-        public System.Guid CategoryIndexerID { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }
     }

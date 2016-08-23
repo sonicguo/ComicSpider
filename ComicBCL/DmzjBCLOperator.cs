@@ -11,6 +11,8 @@ namespace ComicBCL
     public class DmzjBCLOperator
     {
         private ComicSite dmzjSite = null;
+        private object _syncDBLock = new object();
+        private const string _IndexerBaseURL = @"http://http://www.dmzj.com/category/0-0-0-0-0-0-{0}.html";
 
         #region Properties
 
@@ -27,6 +29,7 @@ namespace ComicBCL
         public DmzjBCLOperator()
         {
             Initialize();
+            InitializeSiteCategoryIndexerTable();
         }
 
         #endregion
@@ -40,7 +43,10 @@ namespace ComicBCL
             {
                 InitializeSiteInfo();
             }
+            InitializeSiteCategoryIndexerTable();
         }
+
+
 
         public void UpdateCategoary(string cateName, string cateURL)
         {
@@ -99,11 +105,11 @@ namespace ComicBCL
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
 
-                var result = (from r in m_DBEntity.ComicSite
+                ComicSite result = (from r in m_DBEntity.ComicSite
                               where r.SiteName == "dmzj"
-                              select r).FirstOrDefault();
+                              select r)
+                              .FirstOrDefault();
 
-                ;
                 if (result == null)
                 {
                     dmzjSite = new ComicSite()
@@ -118,6 +124,34 @@ namespace ComicBCL
                 else
                 {
                     dmzjSite = result;
+                }
+            }
+        }
+
+        private void InitializeSiteCategoryIndexerTable()
+        {
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+
+                lock (this._syncDBLock)
+                {
+                    for (int i = 1; i <= 975; i++)
+                    {
+                        string url = string.Format(_IndexerBaseURL, i);
+
+                        var sciInfo = (
+                        from r in m_DBEntity.SiteCategoryIndexer
+                        where r.SiteID == SiteInfo.SiteID
+                        select r
+                        ).FirstOrDefault();
+
+                        if (sciInfo == null || !(sciInfo.SiteID == SiteInfo.SiteID && sciInfo.URL == url))
+                        {
+                            m_DBEntity.SiteCategoryIndexer.Add(new SiteCategoryIndexer() { SiteID = SiteInfo.SiteID, URL = url });
+                            m_DBEntity.SaveChanges();
+                        }
+                    }
+
                 }
             }
         }
