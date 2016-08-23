@@ -87,6 +87,16 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
           <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="SiteCategoryIndexer">
+          <Key>
+            <PropertyRef Name="SiteID" />
+            <PropertyRef Name="CategoryIndexerID" />
+          </Key>
+          <Property Name="SiteID" Type="int" Nullable="false" />
+          <Property Name="CategoryIndexerID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <Association Name="FK_ComicTable_ComicTable">
           <End Role="Comic" Type="Self.Comic" Multiplicity="1" />
           <End Role="Comic1" Type="Self.Comic" Multiplicity="0..1" />
@@ -107,6 +117,7 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
           <EntitySet Name="ComicSite" EntityType="Self.ComicSite" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Page" EntityType="Self.Page" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteCategory" EntityType="Self.SiteCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SiteCategoryIndexer" EntityType="Self.SiteCategoryIndexer" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_ComicTable_ComicTable" Association="Self.FK_ComicTable_ComicTable">
             <End Role="Comic" EntitySet="Comic" />
             <End Role="Comic1" EntitySet="Comic" />
@@ -158,6 +169,7 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
             <End Role="Comic" EntitySet="Comic" />
             <End Role="Comic1" EntitySet="Comic" />
           </AssociationSet>
+          <EntitySet Name="SiteCategoryIndexer" EntityType="ComicSpiderDBModel.SiteCategoryIndexer" />
         </EntityContainer>
         <EntityType Name="Chapter">
           <Key>
@@ -219,6 +231,16 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="SiteCategoryIndexer">
+          <Key>
+            <PropertyRef Name="SiteID" />
+            <PropertyRef Name="CategoryIndexerID" />
+          </Key>
+          <Property Name="SiteID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryIndexerID" Type="Guid" Nullable="false" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -301,6 +323,16 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="URL" ColumnName="URL" />
                 <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SiteCategoryIndexer">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.SiteCategoryIndexer">
+              <MappingFragment StoreEntitySet="SiteCategoryIndexer">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="CategoryIndexerID" ColumnName="CategoryIndexerID" />
                 <ScalarProperty Name="SiteID" ColumnName="SiteID" />
               </MappingFragment>
             </EntityTypeMapping>

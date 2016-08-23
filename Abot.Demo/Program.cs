@@ -14,14 +14,15 @@ namespace Abot.Demo
             log4net.Config.XmlConfigurator.Configure();
             PrintDisclaimer();
 
-            Uri uriToCrawl = GetSiteToCrawl(args);
+            //Uri uriToCrawl = GetSiteToCrawl(args);
+            Uri uriToCrawl = new Uri("http://www.dmzj.com/category/0-0-0-0-0-0-1.html");
 
             IWebCrawler crawler;
 
             //Uncomment only one of the following to see that instance in action
             //crawler = GetDefaultWebCrawler();
             crawler = GetManuallyConfiguredWebCrawler();
-            crawler = GetCustomBehaviorUsingLambdaWebCrawler();
+            //crawler = GetCustomBehaviorUsingLambdaWebCrawler();
 
             //Subscribe to any of these asynchronous events, there are also sychronous versions of each.
             //This is where you process data about specific events of the crawl
@@ -48,6 +49,7 @@ namespace Abot.Demo
 
         private static IWebCrawler GetManuallyConfiguredWebCrawler()
         {
+            /*
             //Create a config object manually
             CrawlConfiguration config = new CrawlConfiguration();
             config.CrawlTimeoutSeconds = 0;
@@ -69,6 +71,42 @@ namespace Abot.Demo
             //Initialize the crawler with custom configuration created above.
             //This override the app.config file values
             return new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
+            */
+
+            // Create a config object manually
+            CrawlConfiguration config = new CrawlConfiguration();
+            config.CrawlTimeoutSeconds = 0;
+            config.DownloadableContentTypes = "text/html";
+            config.IsExternalPageCrawlingEnabled = false;
+            config.IsExternalPageLinksCrawlingEnabled = false;
+            config.IsRespectRobotsDotTextEnabled = false;
+            config.IsUriRecrawlingEnabled = false;
+            config.MaxConcurrentThreads = 5;
+            config.MaxPagesToCrawl = 10000;
+            config.MaxPagesToCrawlPerDomain = 10000;
+            config.MinCrawlDelayPerDomainMilliSeconds = 10000;
+
+            config.MaxCrawlDepth = 2;
+
+            IWebCrawler crawler = new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
+
+
+            //Register a lambda expression that will make Abot not crawl any url that has the word "ghost" in it.
+            //For example http://a.com/ghost, would not get crawled if the link were found during the crawl.
+            //If you set the log4net log level to "DEBUG" you will see a log message when any page is not allowed to be crawled.
+            //NOTE: This is lambda is run after the regular ICrawlDecsionMaker.ShouldCrawlPage method is run.
+            crawler.ShouldCrawlPage((pageToCrawl, crawlContext) =>
+            {
+                if (pageToCrawl.IsRoot || pageToCrawl.Uri.AbsoluteUri.Trim().StartsWith("http://www.dmzj.com/info/"))
+                    return new CrawlDecision { Allow = true, Reason = "crawling page indexer and comic link only" };
+
+                return new CrawlDecision { Allow = false, Reason = "Pass through any other LINKs" };
+            });
+
+
+
+            return crawler;
+
         }
 
         private static IWebCrawler GetCustomBehaviorUsingLambdaWebCrawler()
@@ -151,15 +189,11 @@ namespace Abot.Demo
         {
             CrawledPage crawledPage = e.CrawledPage;
 
-            if (crawledPage.WebException != null || crawledPage.HttpWebResponse.StatusCode != HttpStatusCode.OK)
-                Console.WriteLine("Crawl of page failed {0}", crawledPage.Uri.AbsoluteUri);
-            else
-                Console.WriteLine("Crawl of page succeeded {0}", crawledPage.Uri.AbsoluteUri);
-
             if (string.IsNullOrEmpty(crawledPage.Content.Text))
                 Console.WriteLine("Page had no content {0}", crawledPage.Uri.AbsoluteUri);
             else
             {
+                Console.WriteLine("Crawled Page succeeded  -- ", crawledPage.Uri.AbsoluteUri);
                 string content = crawledPage.Content.Text;
             }
         }

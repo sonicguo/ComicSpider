@@ -8,11 +8,12 @@
         <EntityTypeShape EntityType="ComicSpiderDBModel.Category" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ComicSpiderDBModel.Page" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ComicSpiderDBModel.SiteCategory" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ComicSpiderDBModel.Chapter" Width="1.5" PointX="2.875" PointY="7.625" />
-        <EntityTypeShape EntityType="ComicSpiderDBModel.Comic" Width="1.5" PointX="7.875" PointY="6.625" />
-        <EntityTypeShape EntityType="ComicSpiderDBModel.ComicDetails" Width="1.5" PointX="4.875" PointY="7.625" />
+        <EntityTypeShape EntityType="ComicSpiderDBModel.Chapter" Width="1.5" PointX="6.625" PointY="5.625" />
+        <EntityTypeShape EntityType="ComicSpiderDBModel.Comic" Width="1.5" PointX="8" PointY="3.25" />
+        <EntityTypeShape EntityType="ComicSpiderDBModel.ComicDetails" Width="1.5" PointX="2.375" PointY="3.5" />
         <EntityTypeShape EntityType="ComicSpiderDBModel.ComicSite" Width="1.5" PointX="9.875" PointY="3.625" />
         <AssociationConnector Association="ComicSpiderDBModel.FK_ComicTable_ComicTable1" />
+        <EntityTypeShape EntityType="ComicSpiderDBModel.SiteCategoryIndexer" Width="1.5" PointX="0.75" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

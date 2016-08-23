@@ -97,6 +97,9 @@
       <DependentUpon>ComicDBModule.tt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="SiteCategoryIndexer.cs">
+      <DependentUpon>ComicDBModule.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

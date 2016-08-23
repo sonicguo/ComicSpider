@@ -32,5 +32,6 @@ namespace ComicData
         public virtual DbSet<Comic> Comic { get; set; }
         public virtual DbSet<ComicDetails> ComicDetails { get; set; }
         public virtual DbSet<ComicSite> ComicSite { get; set; }
+        public virtual DbSet<SiteCategoryIndexer> SiteCategoryIndexer { get; set; }
     }
 }

@@ -82,7 +82,11 @@ namespace ComicCrawler
             //crawler = GetDefaultWebCrawler();
             crawler = GetManuallyConfiguredWebCrawler();
 
+            //Start the crawl
+            //This is a synchronous call
+            CrawlResult result = crawler.Crawl(uriToCrawl);
 
+            //System.Threading.Thread.join
         }
 
         private IWebCrawler GetManuallyConfiguredWebCrawler()
@@ -99,6 +103,8 @@ namespace ComicCrawler
             config.MaxPagesToCrawl = 10000;
             config.MaxPagesToCrawlPerDomain = 10000;
             config.MinCrawlDelayPerDomainMilliSeconds = 10000;
+
+            config.MaxCrawlDepth = 1;
 
             IWebCrawler crawler = new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
 
@@ -148,11 +154,11 @@ namespace ComicCrawler
 
         private void Crawler_PageCrawlStartingAsync(object sender, PageCrawlStartingArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
         private void Crawler_PageCrawlCompletedAsync(object sender, PageCrawlCompletedArgs e)
         {
-            throw new NotImplementedException();
+            object o = e.CrawledPage;
         }
 
 
