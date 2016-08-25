@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLib\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,10 +60,6 @@
     <ProjectReference Include="..\ComicData\ComicData.csproj">
       <Project>{47700A74-867C-4F2E-898B-65FF973513DA}</Project>
       <Name>ComicData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HtmlAgilityPack\HtmlAgilityPack.csproj">
-      <Project>{193bb801-054f-4729-9d5d-fce1e32594bf}</Project>
-      <Name>HtmlAgilityPack</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

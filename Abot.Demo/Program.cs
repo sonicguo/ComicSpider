@@ -1,7 +1,8 @@
 ﻿
 using Abot.Crawler;
 using Abot.Poco;
-//using 
+using ComicBCL;
+
 using System;
 using System.Net;
 
@@ -13,29 +14,32 @@ namespace Abot.Demo
         {
             log4net.Config.XmlConfigurator.Configure();
             PrintDisclaimer();
+            DmzjBCLOperator m_BCL = new DmzjBCLOperator();
+            foreach (var uriToCrawl in m_BCL.GetCategoryIndexerUri())
+            {
+                IWebCrawler crawler;
 
-            //Uri uriToCrawl = GetSiteToCrawl(args);
-            Uri uriToCrawl = new Uri("http://www.dmzj.com/category/0-0-0-0-0-0-1.html");
+                crawler = GetManuallyConfiguredWebCrawler();
 
-            IWebCrawler crawler;
+                CrawlResult result = crawler.Crawl(uriToCrawl);
+            }
 
-            //Uncomment only one of the following to see that instance in action
-            //crawler = GetDefaultWebCrawler();
-            crawler = GetManuallyConfiguredWebCrawler();
-            //crawler = GetCustomBehaviorUsingLambdaWebCrawler();
+            ////Uri uriToCrawl = GetSiteToCrawl(args);
+            //Uri uriToCrawl = new Uri("http://www.dmzj.com/category/0-0-0-0-0-0-1.html");
 
-            //Subscribe to any of these asynchronous events, there are also sychronous versions of each.
-            //This is where you process data about specific events of the crawl
-            crawler.PageCrawlStartingAsync += crawler_ProcessPageCrawlStarting;
-            crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
-            crawler.PageCrawlDisallowedAsync += crawler_PageCrawlDisallowed;
-            crawler.PageLinksCrawlDisallowedAsync += crawler_PageLinksCrawlDisallowed;
+            //IWebCrawler crawler;
 
-            //Start the crawl
-            //This is a synchronous call
-            CrawlResult result = crawler.Crawl(uriToCrawl);
+            //crawler = GetManuallyConfiguredWebCrawler();
 
-            //Now go view the log.txt file that is in the same directory as this executable. It has
+            ////Start the crawl
+            ////This is a synchronous call
+            //CrawlResult result = crawler.Crawl(uriToCrawl);
+
+            //Uri uriToCrawl2 = new Uri("http://www.dmzj.com/category/0-0-0-0-0-0-2.html");
+            //IWebCrawler crawler2;
+            //crawler2 = GetManuallyConfiguredWebCrawler();
+            //CrawlResult result2 = crawler2.Crawl(uriToCrawl);
+            ////Now go view the log.txt file that is in the same directory as this executable. It has
             //all the statements that you were trying to read in the console window :).
             //Not enough data being logged? Change the app.config file's log4net log level from "INFO" TO "DEBUG"
 
@@ -49,30 +53,6 @@ namespace Abot.Demo
 
         private static IWebCrawler GetManuallyConfiguredWebCrawler()
         {
-            /*
-            //Create a config object manually
-            CrawlConfiguration config = new CrawlConfiguration();
-            config.CrawlTimeoutSeconds = 0;
-            config.DownloadableContentTypes = "text/html, text/plain";
-            config.IsExternalPageCrawlingEnabled = false;
-            config.IsExternalPageLinksCrawlingEnabled = false;
-            config.IsRespectRobotsDotTextEnabled = false;
-            config.IsUriRecrawlingEnabled = false;
-            config.MaxConcurrentThreads = 1;
-            config.MaxPagesToCrawl = 10;
-            config.MaxPagesToCrawlPerDomain = 100;
-            config.MinCrawlDelayPerDomainMilliSeconds = 10000;
-
-            //Add you own values without modifying Abot's source code.
-            //These are accessible in CrawlContext.CrawlConfuration.ConfigurationException object throughout the crawl
-            config.ConfigurationExtensions.Add("Somekey1", "SomeValue1");
-            config.ConfigurationExtensions.Add("Somekey2", "SomeValue2");
-
-            //Initialize the crawler with custom configuration created above.
-            //This override the app.config file values
-            return new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
-            */
-
             // Create a config object manually
             CrawlConfiguration config = new CrawlConfiguration();
             config.CrawlTimeoutSeconds = 0;
@@ -81,7 +61,7 @@ namespace Abot.Demo
             config.IsExternalPageLinksCrawlingEnabled = false;
             config.IsRespectRobotsDotTextEnabled = false;
             config.IsUriRecrawlingEnabled = false;
-            config.MaxConcurrentThreads = 5;
+            config.MaxConcurrentThreads = 10;
             config.MaxPagesToCrawl = 10000;
             config.MaxPagesToCrawlPerDomain = 10000;
             config.MinCrawlDelayPerDomainMilliSeconds = 10000;
@@ -89,7 +69,6 @@ namespace Abot.Demo
             config.MaxCrawlDepth = 2;
 
             IWebCrawler crawler = new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
-
 
             //Register a lambda expression that will make Abot not crawl any url that has the word "ghost" in it.
             //For example http://a.com/ghost, would not get crawled if the link were found during the crawl.
@@ -103,6 +82,7 @@ namespace Abot.Demo
                 return new CrawlDecision { Allow = false, Reason = "Pass through any other LINKs" };
             });
 
+            crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
 
 
             return crawler;

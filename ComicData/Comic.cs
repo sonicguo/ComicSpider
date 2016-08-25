@@ -15,7 +15,6 @@ namespace ComicData
     public partial class Comic
     {
         public System.Guid ComicID { get; set; }
-        public string ComicName { get; set; }
         public int SiteID { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }

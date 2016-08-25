@@ -16,7 +16,7 @@ namespace ComicData
     public partial class ComicSpiderDBEntities : DbContext
     {
         public ComicSpiderDBEntities()
-            : base("name=ComicSpiderDBEntities") 
+            : base("name=ComicSpiderDBEntities")
         {
         }
     

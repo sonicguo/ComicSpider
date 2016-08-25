@@ -67,10 +67,6 @@
       <Project>{47700a74-867c-4f2e-898b-65ff973513da}</Project>
       <Name>ComicData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HtmlAgilityPack\HtmlAgilityPack.csproj">
-      <Project>{193bb801-054f-4729-9d5d-fce1e32594bf}</Project>
-      <Name>HtmlAgilityPack</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

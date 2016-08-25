@@ -23,5 +23,6 @@ namespace ComicData
         public Nullable<decimal> SubscriptionCount { get; set; }
         public Nullable<decimal> Tweet { get; set; }
         public string Description { get; set; }
+        public string ComicName { get; set; }
     }
 }

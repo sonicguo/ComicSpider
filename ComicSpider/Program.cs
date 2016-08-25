@@ -22,7 +22,7 @@ namespace ComicSpider
             //ComicBCL.DmzjBCLOperator control = new ComicBCL.DmzjBCLOperator();
 
             CrawlerDmzj crawler = new CrawlerDmzj();
-            crawler.CrawlCategory();
+            crawler.CrawlComic();
 
         }
 

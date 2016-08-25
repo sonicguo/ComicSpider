@@ -12,7 +12,7 @@ namespace ComicBCL
     {
         private ComicSite dmzjSite = null;
         private object _syncDBLock = new object();
-        private const string _IndexerBaseURL = @"http://http://www.dmzj.com/category/0-0-0-0-0-0-{0}.html";
+        private const string _IndexerBaseURL = @"http://www.dmzj.com/category/0-0-0-0-0-0-{0}.html";
 
         #region Properties
 
@@ -29,7 +29,6 @@ namespace ComicBCL
         public DmzjBCLOperator()
         {
             Initialize();
-            InitializeSiteCategoryIndexerTable();
         }
 
         #endregion
@@ -89,10 +88,24 @@ namespace ComicBCL
             }
         }
 
-
         public void UpdateComic()
         {
 
+        }
+
+        public List<Uri> GetCategoryIndexerUri()
+        {
+            List<Uri> uris = new List<Uri>();
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+                var result = GetSiteCategoryIndexerListFromDB();
+
+                foreach (var item in result)
+                {
+                    uris.Add(new Uri(item));
+                }
+            }
+            return uris;
         }
 
         #endregion
@@ -132,27 +145,32 @@ namespace ComicBCL
         {
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
+                var sciList = GetSiteCategoryIndexerListFromDB();
 
                 lock (this._syncDBLock)
                 {
                     for (int i = 1; i <= 975; i++)
                     {
                         string url = string.Format(_IndexerBaseURL, i);
-
-                        var sciInfo = (
-                        from r in m_DBEntity.SiteCategoryIndexer
-                        where r.SiteID == SiteInfo.SiteID
-                        select r
-                        ).FirstOrDefault();
-
-                        if (sciInfo == null || !(sciInfo.SiteID == SiteInfo.SiteID && sciInfo.URL == url))
+                        if (!sciList.Contains(url))
                         {
                             m_DBEntity.SiteCategoryIndexer.Add(new SiteCategoryIndexer() { SiteID = SiteInfo.SiteID, URL = url });
-                            m_DBEntity.SaveChanges();
                         }
                     }
-
+                    m_DBEntity.SaveChanges();
                 }
+            }
+        }
+
+        private string[] GetSiteCategoryIndexerListFromDB()
+        {
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+                return (
+                from r in m_DBEntity.SiteCategoryIndexer
+                where r.SiteID == SiteInfo.SiteID
+                select r.URL
+                ).ToArray();
             }
         }
 
