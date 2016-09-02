@@ -17,12 +17,28 @@ namespace ComicCrawler
 {
     public class CrawlerDmzj : BasicCrawler
     {
-        private DmzjBCLOperator m_BCL;
+        private DmzjBCLOperator m_BCL = new DmzjBCLOperator();
+
+        public int SiteID
+        {
+            get
+            {
+                return m_BCL.SiteInfo.SiteID;
+            }
+        }
+
+        public string SiteName
+        {
+            get
+            {
+                return m_BCL.SiteInfo.SiteName;
+            }
+        }
 
 
         public CrawlerDmzj()
         {
-            m_BCL = new DmzjBCLOperator();
+            //m_BCL = new DmzjBCLOperator();
 
         }
 
@@ -130,7 +146,7 @@ namespace ComicCrawler
             //NOTE: This is lambda is run after the regular ICrawlDecsionMaker.ShouldCrawlPage method is run.
             crawler.ShouldCrawlPage((pageToCrawl, crawlContext) =>
             {
-                if (pageToCrawl.IsRoot || pageToCrawl.Uri.AbsoluteUri.Trim().StartsWith("http://www.dmzj.com/info/"))
+                if (pageToCrawl.IsRoot || pageToCrawl.Uri.AbsoluteUri.Trim().StartsWith("http://www.dmzj.com/info/"))   // ignore web page if it's not a Comic
                     return new CrawlDecision { Allow = true, Reason = "crawling page indexer and comic link only" };
 
                 return new CrawlDecision { Allow = false, Reason = "Pass through any other LINKs" };
@@ -146,17 +162,31 @@ namespace ComicCrawler
         {
             //throw new NotImplementedException();
         }
-        static void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
+        private void crawler_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
             CrawledPage crawledPage = e.CrawledPage;
 
-            if (string.IsNullOrEmpty(crawledPage.Content.Text))
+            if (string.IsNullOrEmpty(crawledPage.Content.Text) || crawledPage.IsRoot)
                 Console.WriteLine("Page had no content {0}", crawledPage.Uri.AbsoluteUri);
             else
             {
-                Console.WriteLine("Crawled Page succeeded  -- ", crawledPage.Uri.AbsoluteUri);
-                string content = crawledPage.Content.Text;
+                CrawlerComicInfo(crawledPage);
             }
+        }
+
+        private void CrawlerComicInfo(CrawledPage page)
+        {
+            if (page == null || string.IsNullOrEmpty(page.Content.Text))
+            {
+                return;
+            }
+            string uri = page.Uri.ToString();
+            int siteID = this.SiteID;
+            string description = "";
+
+            m_BCL.UpdateComic(siteID,uri,description);
+
+
         }
 
 

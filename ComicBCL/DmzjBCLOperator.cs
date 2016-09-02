@@ -179,6 +179,33 @@ namespace ComicBCL
 
         }
 
+        public Comic UpdateComic(int siteID, string uri, string description)
+        {
+            Comic retRes = null;
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+                Comic res = (from r in m_DBEntity.Comic where r.SiteID == siteID where r.URL == uri select r).FirstOrDefault();
+
+                if (res == null)
+                {
+                    Comic comic = new Comic();
+                    comic.SiteID = siteID;
+                    comic.URL = uri;
+                    comic.Description = description;
+                    m_DBEntity.Comic.Add(comic);
+                    m_DBEntity.SaveChanges();
+                    retRes = comic;
+                }
+                else
+                {
+                    retRes = res;
+                }
+
+            }
+
+            return retRes;
+        }
+
         #endregion
 
     }
