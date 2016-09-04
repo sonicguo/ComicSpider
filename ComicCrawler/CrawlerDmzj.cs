@@ -224,9 +224,26 @@ namespace ComicCrawler
 
             var chapterRootNode = doc.DocumentNode.SelectNodes(xPathChapterRoot).FirstOrDefault();
 
-            foreach (var chapterNode in chapterRootNode.ChildNodes)
+            foreach (var chapterNode in chapterRootNode.SelectNodes("li"))
             {
+                if (chapterNode == null) continue;
+                if (chapterNode.SelectNodes("a") == null || chapterNode.SelectNodes("a")[0] == null) continue;
 
+
+                string chapterName = chapterNode.SelectNodes("a")[0].ChildNodes[1].InnerText;    // "第76话"
+                string chapterURL = chapterNode
+                    ?.SelectNodes("a")[0]
+                    ?.Attributes["href"]
+                    ?.Value;    // "http://www.dmzj.com/view/xianxiashijie/56676.html" 
+                string chapterDesc = chapterNode
+                    ?.SelectNodes("a")[0]
+                    ?.Attributes["title"]
+                    ?.Value; // "仙侠世界第76话 2016-09-02" 
+                int totalPage = -1;
+
+                if (string.IsNullOrEmpty(chapterName) || string.IsNullOrEmpty(chapterURL)) { continue; }
+
+                m_BCL.UpdateChapter(comicID, chapterName, chapterURL, chapterDesc, totalPage);
             }
 
 

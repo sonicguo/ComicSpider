@@ -238,6 +238,7 @@ namespace ComicBCL
                     chapter.ChapterGUID = Guid.NewGuid();
                 }
 
+                chapter.ComicID = comicID;
                 chapter.Name = name;
                 chapter.URL = url;
                 chapter.Description = description;
