@@ -14,12 +14,11 @@ namespace ComicData
     
     public partial class Chapter
     {
-        public int ChapterID { get; set; }
+        public System.Guid ChapterGUID { get; set; }
         public System.Guid ComicID { get; set; }
         public string Name { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }
-        public System.Guid ChapterGUID { get; set; }
         public int TotalPage { get; set; }
     }
 }

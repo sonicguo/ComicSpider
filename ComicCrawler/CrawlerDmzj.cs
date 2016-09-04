@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 using Abot.Crawler;
 using Abot.Poco;
 
+using AbotX;
+using AbotX.Crawler;
+using AbotX.Core;
+using AbotX.Poco;
+
+
 using HtmlAgilityPack;
 
 using ComicBCL;
@@ -38,7 +44,6 @@ namespace ComicCrawler
 
         public CrawlerDmzj()
         {
-            //m_BCL = new DmzjBCLOperator();
 
         }
 
@@ -123,6 +128,7 @@ namespace ComicCrawler
 
         private IWebCrawler GetManuallyConfiguredWebCrawler()
         {
+            
             // Create a config object manually
             CrawlConfiguration config = new CrawlConfiguration();
             config.CrawlTimeoutSeconds = 0;
@@ -136,6 +142,7 @@ namespace ComicCrawler
             config.MaxPagesToCrawlPerDomain = 10000;
             config.MinCrawlDelayPerDomainMilliSeconds = 10000;
 
+            
             config.MaxCrawlDepth = 2;
 
             IWebCrawler crawler = new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
@@ -184,7 +191,43 @@ namespace ComicCrawler
             int siteID = this.SiteID;
             string description = "";
 
-            m_BCL.UpdateComic(siteID,uri,description);
+            Guid comicID = m_BCL.UpdateComic(siteID,uri,description);
+
+            HtmlAgilityPack.HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(page.Content.Text);
+
+            string xPathRoot = "/html[1]/body[1]/div[2]/div[1]/div[1]/div[2]";
+            string xPathTitle = "h1[1]/a[1]";
+            //string xPathRanking = "div[1]/span[2]/em[1]";
+            //string xPathRankingCount = "div[1]/span[2]/em[2]";
+            string xPathAuthor = "ul[1]/li[1]";
+            string xPathStatus = "ul[1]/li[2]";
+            string xPathCategory = "ul[1]/li[3]";
+            
+
+            var rootNode = doc.DocumentNode.SelectNodes(xPathRoot).FirstOrDefault();
+            if (rootNode != null)
+            {
+                string title = rootNode.SelectNodes(xPathTitle).FirstOrDefault()?.InnerText;
+
+                string author = rootNode.SelectNodes(xPathAuthor).FirstOrDefault()?.InnerText;
+                string status = rootNode.SelectNodes(xPathStatus).FirstOrDefault()?.InnerText;
+                string category = rootNode.SelectNodes(xPathCategory).FirstOrDefault()?.InnerText;
+
+                author = string.IsNullOrEmpty(author) ? string.Empty : author.Trim().Substring(3, author.Length - 1 - 3); // 作者：肆叶动漫-涂秋 
+
+                m_BCL.UpdateComicComicDetail(comicID, title, author, !status.Contains("已完结"));
+
+            }
+
+            string xPathChapterRoot = "/html[1]/body[1]/div['wrap autoHeight']/div[1]/div[4]/div[2]/ul[1]";
+
+            var chapterRootNode = doc.DocumentNode.SelectNodes(xPathChapterRoot).FirstOrDefault();
+
+            foreach (var chapterNode in chapterRootNode.ChildNodes)
+            {
+
+            }
 
 
         }
