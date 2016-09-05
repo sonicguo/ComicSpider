@@ -209,20 +209,38 @@ namespace ComicBCL
         {
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
-                ComicDetails detail = (from r in m_DBEntity.ComicDetails where r.ComicID == comicID select r).FirstOrDefault();
-
-                if (detail == null)
+                try
                 {
-                    detail = new ComicDetails();
-                    detail.ComicID = comicID;
+
+
+                    ComicDetails detail = (from r in m_DBEntity.ComicDetails where r.ComicID == comicID select r).FirstOrDefault();
+
+                    if (detail != null)
+                    {
+                        detail.ComicID = comicID;
+                        detail.ComicName = comicName;
+                        detail.Author = author;
+                        detail.Status = status;
+                        m_DBEntity.SaveChanges();
+                    }
+                    else
+                    {
+                        detail = new ComicDetails();
+                        detail.ComicID = comicID;
+                        detail.ComicName = comicName;
+                        detail.Author = author;
+                        detail.Status = status;
+
+                        m_DBEntity.ComicDetails.Add(detail);
+                        m_DBEntity.SaveChanges();
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;  // TODO : capture and log exception
                 }
 
-                detail.ComicName = comicName;
-                detail.Author = author;
-                detail.Status = status;
-
-                m_DBEntity.ComicDetails.Add(detail);
-                m_DBEntity.SaveChanges();
             }
         }
 
@@ -230,24 +248,43 @@ namespace ComicBCL
         {
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
-                var chapter = (from r in m_DBEntity.Chapter where r.ComicID == comicID where r.Name == name select r).FirstOrDefault();
-
-                if (chapter == null)
+                try
                 {
-                    chapter = new Chapter();
-                    chapter.ChapterGUID = Guid.NewGuid();
+
+
+                    var chapter = (from r in m_DBEntity.Chapter where r.ComicID == comicID where r.Name == name select r).FirstOrDefault();
+
+                    if (chapter != null)
+                    {
+                        chapter.ComicID = comicID;
+                        chapter.Name = name;
+                        chapter.URL = url;
+                        chapter.Description = description;
+                        chapter.TotalPage = totalPage;
+
+                        m_DBEntity.SaveChanges();
+                    }
+                    else
+                    {
+                        chapter = new Chapter();
+                        chapter.ChapterGUID = Guid.NewGuid();
+                        chapter.ComicID = comicID;
+                        chapter.Name = name;
+                        chapter.URL = url;
+                        chapter.Description = description;
+                        chapter.TotalPage = totalPage;
+
+                        m_DBEntity.Chapter.Add(chapter);
+                        m_DBEntity.SaveChanges();
+                    }
+
+                    return chapter.ChapterGUID;
                 }
+                catch (Exception ex)
+                {
 
-                chapter.ComicID = comicID;
-                chapter.Name = name;
-                chapter.URL = url;
-                chapter.Description = description;
-                chapter.TotalPage = totalPage;
-
-                m_DBEntity.Chapter.Add(chapter);
-                m_DBEntity.SaveChanges();
-
-                return chapter.ChapterGUID;
+                    throw ex; // TODO : capture and log excpetion
+                }
             }
         }
 
