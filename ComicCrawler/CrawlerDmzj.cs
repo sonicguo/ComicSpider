@@ -88,47 +88,17 @@ namespace ComicCrawler
         }
 
 
-        public override void CrawlComic()
-        {
-            //PrepareCrawlForChapter();
-
-            //CrawComicWithHtmlAgilityPack();
-
-            PrepareCrawlForComic();
-        }
 
 
 
-        /// <summary>
-        /// Crawling from http://www.dmzj.com/category/0-0-0-0-0-0-1.html
-        /// </summary>
-        public override void CrawlComicChapter()
-        {
-            //PrepareCrawlForChapter();
 
 
-        }
+    
 
         #region Private Method -- Web Crawl
 
 
-        private void PrepareCrawlForChapter()
-        {
-            PrintDisclaimer();
-            foreach (var uriToCrawl in m_BCL.GetCategoryIndexerUri())
-            {
-                IWebCrawler crawler;
-                crawler = GetManuallyConfiguredWebCrawler();
-                //This is a synchronous call
-                CrawlResult result = crawler.Crawl(uriToCrawl);
-            }
-            PrintDisclaimer();
-        }
 
-        private static void PrintDisclaimer()
-        {
-            PrintAttentionText("The demo is configured to only crawl a total of 10 pages and will wait 1 second in between http requests. This is to avoid getting you blocked by your isp or the sites you are trying to crawl. You can change these values in the app.config or Abot.Console.exe.config file.");
-        }
 
         private static void PrintAttentionText(string text)
         {
@@ -139,44 +109,7 @@ namespace ComicCrawler
         }
 
 
-        private IWebCrawler GetManuallyConfiguredWebCrawler()
-        {
-            
-            // Create a config object manually
-            CrawlConfiguration config = new CrawlConfiguration();
-            config.CrawlTimeoutSeconds = 0;
-            config.DownloadableContentTypes = "text/html";
-            config.IsExternalPageCrawlingEnabled = false;
-            config.IsExternalPageLinksCrawlingEnabled = false;
-            config.IsRespectRobotsDotTextEnabled = false;
-            config.IsUriRecrawlingEnabled = false;
-            config.MaxConcurrentThreads = 10;
-            config.MaxPagesToCrawl = 0;
-            config.MaxPagesToCrawlPerDomain = 0;
-            config.MinCrawlDelayPerDomainMilliSeconds = 30000;
-
-            
-            config.MaxCrawlDepth = 2;
-
-            IWebCrawler crawler = new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
-
-            //Register a lambda expression that will make Abot not crawl any url that has the word "ghost" in it.
-            //For example http://a.com/ghost, would not get crawled if the link were found during the crawl.
-            //If you set the log4net log level to "DEBUG" you will see a log message when any page is not allowed to be crawled.
-            //NOTE: This is lambda is run after the regular ICrawlDecsionMaker.ShouldCrawlPage method is run.
-            crawler.ShouldCrawlPage((pageToCrawl, crawlContext) =>
-            {
-                if (pageToCrawl.IsRoot || pageToCrawl.Uri.AbsoluteUri.Trim().StartsWith("http://www.dmzj.com/info/"))   // ignore web page if it's not a Comic
-                    return new CrawlDecision { Allow = true, Reason = "crawling page indexer and comic link only" };
-
-                return new CrawlDecision { Allow = false, Reason = "Pass through any other LINKs" };
-            });
-
-            crawler.PageCrawlCompletedAsync += crawler_ProcessPageCrawlCompleted;
-
-
-            return crawler;
-        }
+        
 
         private void Crawler_PageCrawlStartingAsync(object sender, PageCrawlStartingArgs e)
         {
@@ -276,17 +209,24 @@ namespace ComicCrawler
 
         }
 
-
-        #endregion
-
-        #region "Crawling with HtmlAgilityPack"
-        private void CrawComicWithHtmlAgilityPack()
+        private static void PrintDisclaimer()
         {
-
+            PrintAttentionText("The demo is configured to only crawl a total of 10 pages and will wait 1 second in between http requests. This is to avoid getting you blocked by your isp or the sites you are trying to crawl. You can change these values in the app.config or Abot.Console.exe.config file.");
         }
+
         #endregion
+
 
         #region "Crawling Comic"
+
+        public override void CrawlComic()
+        {
+            //PrepareCrawlForChapter();
+
+            //CrawComicWithHtmlAgilityPack();
+
+            PrepareCrawlForComic();
+        }
 
         private void PrepareCrawlForComic()
         {
@@ -300,7 +240,6 @@ namespace ComicCrawler
             }
             PrintDisclaimer();
         }
-
         private IWebCrawler GetManuallyConfiguredWebCrawlerForComic()
         {
 
@@ -322,25 +261,21 @@ namespace ComicCrawler
 
             IWebCrawler crawler = new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
 
-            //Register a lambda expression that will make Abot not crawl any url that has the word "ghost" in it.
-            //For example http://a.com/ghost, would not get crawled if the link were found during the crawl.
-            //If you set the log4net log level to "DEBUG" you will see a log message when any page is not allowed to be crawled.
-            //NOTE: This is lambda is run after the regular ICrawlDecsionMaker.ShouldCrawlPage method is run.
             crawler.ShouldCrawlPage((pageToCrawl, crawlContext) =>
             {
                 if (pageToCrawl.IsRoot)   // ignore web page if it's not a root
-                    return new CrawlDecision { Allow = true, Reason = "crawling page indexer and comic link only" };
+                    return new CrawlDecision { Allow = true, Reason = "crawling category links only" };
 
                 return new CrawlDecision { Allow = false, Reason = "Pass through any other LINKs" };
             });
 
-            crawler.PageCrawlCompletedAsync += crawlerComic_ProcessPageCrawlCompleted;
+            crawler.PageCrawlCompletedAsync += crawlerComic_ProcessComicCrawlCompleted;
 
 
             return crawler;
         }
 
-        private void crawlerComic_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
+        private void crawlerComic_ProcessComicCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
             CrawledPage crawledPage = e.CrawledPage;
 
@@ -422,7 +357,151 @@ namespace ComicCrawler
 
         #endregion
 
+        #region “Crawing Comic Chapter”
 
+        /// <summary>
+        /// Comic Links already store on table Comic. Crawling Chapter from Comic links
+        /// </summary>
+        public override void CrawlComicChapter()
+        {
+            PrepareCrawlForChapter();
+
+
+        }
+
+        private void PrepareCrawlForChapter()
+        {
+            PrintDisclaimer();
+            foreach (var uriToCrawl in m_BCL.GetCategoryIndexerUri())
+            {
+                IWebCrawler crawler;
+                crawler = GetManuallyConfiguredWebCrawler();
+                //This is a synchronous call
+                CrawlResult result = crawler.Crawl(uriToCrawl);
+            }
+            PrintDisclaimer();
+        }
+
+        private IWebCrawler GetManuallyConfiguredWebCrawler()
+        {
+
+            // Create a config object manually
+            CrawlConfiguration config = new CrawlConfiguration();
+            config.CrawlTimeoutSeconds = 0;
+            config.DownloadableContentTypes = "text/html";
+            config.IsExternalPageCrawlingEnabled = false;
+            config.IsExternalPageLinksCrawlingEnabled = false;
+            config.IsRespectRobotsDotTextEnabled = false;
+            config.IsUriRecrawlingEnabled = false;
+            config.MaxConcurrentThreads = 10;
+            config.MaxPagesToCrawl = 0;
+            config.MaxPagesToCrawlPerDomain = 0;
+            config.MinCrawlDelayPerDomainMilliSeconds = 30000;
+
+
+            config.MaxCrawlDepth = 0;
+
+            IWebCrawler crawler = new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
+
+            //Register a lambda expression that will make Abot not crawl any url that has the word "ghost" in it.
+            //For example http://a.com/ghost, would not get crawled if the link were found during the crawl.
+            //If you set the log4net log level to "DEBUG" you will see a log message when any page is not allowed to be crawled.
+            //NOTE: This is lambda is run after the regular ICrawlDecsionMaker.ShouldCrawlPage method is run.
+            crawler.ShouldCrawlPage((pageToCrawl, crawlContext) =>
+            {
+                if (pageToCrawl.IsRoot)   // ignore web page if it's not a Comic
+                    return new CrawlDecision { Allow = true, Reason = "crawling comic link only" };
+
+                return new CrawlDecision { Allow = false, Reason = "Pass through any other LINKs" };
+            });
+
+            crawler.PageCrawlCompletedAsync += crawler_ProcessChapterCrawlCompleted;
+
+
+            return crawler;
+        }
+
+        private void crawler_ProcessChapterCrawlCompleted(object sender, PageCrawlCompletedArgs e)
+        {
+                        CrawledPage crawledPage = e.CrawledPage;
+
+            if (string.IsNullOrEmpty(crawledPage.Content.Text))
+                Console.WriteLine("Page had no content {0}", crawledPage.Uri.AbsoluteUri);
+            else if (crawledPage.IsRoot)
+            {
+                Console.WriteLine("Page is root URL {0}, start crawling", crawledPage.Uri.AbsoluteUri);
+                CrawlerChapterFromComicPage(crawledPage);
+            }
+            else
+            {
+                Console.WriteLine("Page is not root URL {0}, skipping crawling", crawledPage.Uri.AbsoluteUri);
+            }
+        }
+
+        private void CrawlerChapterFromComicPage(CrawledPage page)
+        {
+            if (page == null || string.IsNullOrEmpty(page.Content.Text) || !page.IsRoot)
+            {
+                return;
+            }
+
+            string uri = page.Uri.ToString();
+            int siteID = this.SiteID;
+            string description = "";
+
+            try
+            {
+
+
+                HtmlAgilityPack.HtmlDocument doc = new HtmlDocument();
+                doc.LoadHtml(page.Content.Text);
+                Guid comicID = m_BCL.GetComicID(siteID, page.Uri);
+
+                if (comicID == null || comicID == Guid.Empty) { return; }
+
+
+                string xPathChapterRoot = "/html[1]/body[1]/div['wrap autoHeight']/div[1]/div[4]/div[2]/ul[1]";
+
+                var chapterRootNode = doc.DocumentNode.SelectNodes(xPathChapterRoot).SingleOrDefault();
+                if (chapterRootNode != null && chapterRootNode.ChildNodes != null)
+                {
+                    var chapterNodes = chapterRootNode.SelectNodes("li");
+                    if (chapterNodes != null || chapterNodes.Count > 0)
+                    {
+
+                        for (int i = chapterNodes.Count - 1; i >=0; i--)
+                        {
+                            var chapterNode = chapterNodes[i];
+
+                            if (chapterNode == null) continue;
+                            if (chapterNode.SelectNodes("a").SingleOrDefault() == null) continue;
+
+                            string chapterName = chapterNode.SelectNodes("a").SingleOrDefault()?.ChildNodes[1]?.InnerText;    // "第76话"
+                            string chapterURL = chapterNode
+                                ?.SelectNodes("a")[0]
+                                ?.Attributes["href"]
+                                ?.Value;    // "http://www.dmzj.com/view/xianxiashijie/56676.html" 
+                            string chapterDesc = chapterNode
+                                ?.SelectNodes("a")[0]
+                                ?.Attributes["title"]
+                                ?.Value; // "仙侠世界第76话 2016-09-02" 
+                            int totalPage = -1;
+
+                            if (string.IsNullOrEmpty(chapterName) || string.IsNullOrEmpty(chapterURL)) { continue; }
+
+                            m_BCL.UpdateChapter(comicID, chapterName, chapterURL, chapterDesc, totalPage);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        #endregion
 
     }
 }

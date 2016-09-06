@@ -20,5 +20,6 @@ namespace ComicData
         public string URL { get; set; }
         public string Description { get; set; }
         public int TotalPage { get; set; }
+        public Nullable<int> OrderValue { get; set; }
     }
 }

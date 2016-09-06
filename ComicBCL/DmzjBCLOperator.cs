@@ -251,7 +251,6 @@ namespace ComicBCL
                 try
                 {
 
-
                     var chapter = (from r in m_DBEntity.Chapter where r.ComicID == comicID where r.Name == name select r).FirstOrDefault();
 
                     if (chapter != null)
@@ -287,6 +286,14 @@ namespace ComicBCL
                 }
             }
             return chapterID;
+        }
+
+        public Guid GetComicID(int siteID, Uri uri)
+        {
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+                return (from r in m_DBEntity.Comic where r.SiteID == siteID where r.URL == uri.ToString() select r.ComicID).SingleOrDefault();
+            }
         }
 
         #endregion
