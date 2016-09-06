@@ -238,7 +238,7 @@ namespace ComicBCL
                 catch (Exception)
                 {
 
-                    throw;  // TODO : capture and log exception
+                    //throw;  // TODO : capture and log exception
                 }
 
             }
@@ -246,8 +246,10 @@ namespace ComicBCL
 
         public Guid UpdateChapter(Guid comicID, string name, string url, string description, int totalPage )
         {
+            Guid chapterID = new Guid();
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
+                
                 try
                 {
 
@@ -278,14 +280,15 @@ namespace ComicBCL
                         m_DBEntity.SaveChanges();
                     }
 
-                    return chapter.ChapterGUID;
+                    chapterID = chapter.ChapterGUID;
                 }
                 catch (Exception ex)
                 {
 
-                    throw ex; // TODO : capture and log excpetion
+                    //throw ex; // TODO : capture and log excpetion
                 }
             }
+            return chapterID;
         }
 
         #endregion

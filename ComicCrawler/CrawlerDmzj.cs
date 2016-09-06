@@ -7,17 +7,15 @@ using System.Threading.Tasks;
 using Abot.Crawler;
 using Abot.Poco;
 
-using AbotX;
-using AbotX.Crawler;
-using AbotX.Core;
-using AbotX.Poco;
-
+//using AbotX;
+//using AbotX.Crawler;
+//using AbotX.Core;
+//using AbotX.Poco;
 
 using HtmlAgilityPack;
 
 using ComicBCL;
-
-
+using log4net;
 
 namespace ComicCrawler
 {
@@ -54,23 +52,32 @@ namespace ComicCrawler
             HtmlAgilityPack.HtmlDocument doc = web.Load(URL);
 
             string xPath = "/html[1]/body[1]/div[2]/div[2]/div[1]/div[2]/div[3]/ul[1]/span/li";
-
-            foreach (HtmlNode link in doc.DocumentNode.SelectNodes(xPath))
+            try
             {
-                if (link.Name != "li" || link.ChildNodes["a"] == null || link.ChildNodes["a"].Attributes["href"] == null)
+
+
+                foreach (HtmlNode link in doc.DocumentNode.SelectNodes(xPath))
                 {
-                    continue;
+                    if (link.Name != "li" || link.ChildNodes["a"] == null || link.ChildNodes["a"].Attributes["href"] == null)
+                    {
+                        continue;
+                    }
+
+                    string cateName = link.InnerText;
+                    string cateURL = link.ChildNodes["a"].Attributes["href"].Value;
+
+                    if (!string.IsNullOrEmpty(cateName) && !string.IsNullOrEmpty(cateURL))
+                    {
+                        cateURL = m_BCL.SiteInfo.URL.Trim() + (cateURL.Trim().StartsWith("/") ? cateURL.Trim() : ("/" + cateURL.Trim()));
+                        m_BCL.UpdateCategoary(cateName, cateURL);
+                    }
+
                 }
+            }
+            catch (Exception)
+            {
 
-                string cateName = link.InnerText;
-                string cateURL = link.ChildNodes["a"].Attributes["href"].Value;
-
-                if (!string.IsNullOrEmpty(cateName) && ! string.IsNullOrEmpty(cateURL))
-                {
-                    cateURL = m_BCL.SiteInfo.URL.Trim() + (cateURL.Trim().StartsWith("/") ? cateURL.Trim() : ("/" + cateURL.Trim()));
-                    m_BCL.UpdateCategoary(cateName, cateURL);
-                }
-
+                throw;
             }
         }
 
@@ -97,7 +104,6 @@ namespace ComicCrawler
 
         #region Private Method -- Web Crawl
 
-        
 
         private void PrepareCrawlForChapter()
         {
@@ -138,9 +144,9 @@ namespace ComicCrawler
             config.IsRespectRobotsDotTextEnabled = false;
             config.IsUriRecrawlingEnabled = false;
             config.MaxConcurrentThreads = 10;
-            config.MaxPagesToCrawl = 10000;
-            config.MaxPagesToCrawlPerDomain = 10000;
-            config.MinCrawlDelayPerDomainMilliSeconds = 10000;
+            config.MaxPagesToCrawl = 0;
+            config.MaxPagesToCrawlPerDomain = 0;
+            config.MinCrawlDelayPerDomainMilliSeconds = 30000;
 
             
             config.MaxCrawlDepth = 2;
@@ -191,61 +197,75 @@ namespace ComicCrawler
             int siteID = this.SiteID;
             string description = "";
 
-            Guid comicID = m_BCL.UpdateComic(siteID,uri,description);
-
-            HtmlAgilityPack.HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(page.Content.Text);
-
-            string xPathRoot = "/html[1]/body[1]/div[2]/div[1]/div[1]/div[2]";
-            string xPathTitle = "h1[1]/a[1]";
-            //string xPathRanking = "div[1]/span[2]/em[1]";
-            //string xPathRankingCount = "div[1]/span[2]/em[2]";
-            string xPathAuthor = "ul[1]/li[1]";
-            string xPathStatus = "ul[1]/li[2]";
-            string xPathCategory = "ul[1]/li[3]";
-            
-
-            var rootNode = doc.DocumentNode.SelectNodes(xPathRoot).FirstOrDefault();
-            if (rootNode != null)
+            try
             {
-                string title = rootNode.SelectNodes(xPathTitle).FirstOrDefault()?.InnerText;
 
-                string author = rootNode.SelectNodes(xPathAuthor).FirstOrDefault()?.InnerText;
-                string status = rootNode.SelectNodes(xPathStatus).FirstOrDefault()?.InnerText;
-                string category = rootNode.SelectNodes(xPathCategory).FirstOrDefault()?.InnerText;
+                Guid comicID = m_BCL.UpdateComic(siteID, uri, description);
 
-                author = string.IsNullOrEmpty(author) ? string.Empty : author.Trim().Substring(3, author.Length - 1 - 3); // 作者：肆叶动漫-涂秋 
+                HtmlAgilityPack.HtmlDocument doc = new HtmlDocument();
+                doc.LoadHtml(page.Content.Text);
 
-                m_BCL.UpdateComicComicDetail(comicID, title, author, !status.Contains("已完结"));
+                string xPathRoot = "/html[1]/body[1]/div[2]/div[1]/div[1]/div[2]";
+                string xPathTitle = "h1[1]/a[1]";
+                //string xPathRanking = "div[1]/span[2]/em[1]";
+                //string xPathRankingCount = "div[1]/span[2]/em[2]";
+                string xPathAuthor = "ul[1]/li[1]";
+                string xPathStatus = "ul[1]/li[2]";
+                string xPathCategory = "ul[1]/li[3]";
 
+
+                var rootNode = doc.DocumentNode.SelectNodes(xPathRoot).FirstOrDefault();
+                if (rootNode != null)
+                {
+                    string title = rootNode.SelectNodes(xPathTitle).FirstOrDefault()?.InnerText;
+
+                    string author = rootNode.SelectNodes(xPathAuthor).FirstOrDefault()?.InnerText;
+                    string status = rootNode.SelectNodes(xPathStatus).FirstOrDefault()?.InnerText;
+                    string category = rootNode.SelectNodes(xPathCategory).FirstOrDefault()?.InnerText;
+
+                    author = string.IsNullOrEmpty(author) ? string.Empty : author.Trim().Replace("作者：", ""); // 作者：肆叶动漫-涂秋 
+
+                    m_BCL.UpdateComicComicDetail(comicID, title, author, !status.Contains("已完结"));
+
+                }
+
+                string xPathChapterRoot = "/html[1]/body[1]/div['wrap autoHeight']/div[1]/div[4]/div[2]/ul[1]";
+
+                var chapterRootNode = doc.DocumentNode.SelectNodes(xPathChapterRoot).FirstOrDefault();
+                if (chapterRootNode != null && chapterRootNode.ChildNodes != null)
+                {
+                    var chapterNodes = chapterRootNode.SelectNodes("li");
+                    if (chapterNodes != null)
+                    {
+                        foreach (var chapterNode in chapterRootNode.SelectNodes("li"))
+                        {
+                            if (chapterNode == null) continue;
+                            if (chapterNode.SelectNodes("a") == null || chapterNode.SelectNodes("a")[0] == null) continue;
+
+
+                            string chapterName = chapterNode.SelectNodes("a")[0].ChildNodes[1].InnerText;    // "第76话"
+                            string chapterURL = chapterNode
+                                ?.SelectNodes("a")[0]
+                                ?.Attributes["href"]
+                                ?.Value;    // "http://www.dmzj.com/view/xianxiashijie/56676.html" 
+                            string chapterDesc = chapterNode
+                                ?.SelectNodes("a")[0]
+                                ?.Attributes["title"]
+                                ?.Value; // "仙侠世界第76话 2016-09-02" 
+                            int totalPage = -1;
+
+                            if (string.IsNullOrEmpty(chapterName) || string.IsNullOrEmpty(chapterURL)) { continue; }
+
+                            m_BCL.UpdateChapter(comicID, chapterName, chapterURL, chapterDesc, totalPage);
+                        }
+                    }
+                }
             }
-
-            string xPathChapterRoot = "/html[1]/body[1]/div['wrap autoHeight']/div[1]/div[4]/div[2]/ul[1]";
-
-            var chapterRootNode = doc.DocumentNode.SelectNodes(xPathChapterRoot).FirstOrDefault();
-
-            foreach (var chapterNode in chapterRootNode.SelectNodes("li"))
+            catch (Exception)
             {
-                if (chapterNode == null) continue;
-                if (chapterNode.SelectNodes("a") == null || chapterNode.SelectNodes("a")[0] == null) continue;
 
-
-                string chapterName = chapterNode.SelectNodes("a")[0].ChildNodes[1].InnerText;    // "第76话"
-                string chapterURL = chapterNode
-                    ?.SelectNodes("a")[0]
-                    ?.Attributes["href"]
-                    ?.Value;    // "http://www.dmzj.com/view/xianxiashijie/56676.html" 
-                string chapterDesc = chapterNode
-                    ?.SelectNodes("a")[0]
-                    ?.Attributes["title"]
-                    ?.Value; // "仙侠世界第76话 2016-09-02" 
-                int totalPage = -1;
-
-                if (string.IsNullOrEmpty(chapterName) || string.IsNullOrEmpty(chapterURL)) { continue; }
-
-                m_BCL.UpdateChapter(comicID, chapterName, chapterURL, chapterDesc, totalPage);
+                throw;
             }
-
 
         }
 
