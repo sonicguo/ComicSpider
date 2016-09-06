@@ -90,8 +90,15 @@ namespace ComicCrawler
 
         public override void CrawlComic()
         {
-            PrepareCrawlForChapter();
+            //PrepareCrawlForChapter();
+
+            //CrawComicWithHtmlAgilityPack();
+
+            PrepareCrawlForComic();
         }
+
+
+
         /// <summary>
         /// Crawling from http://www.dmzj.com/category/0-0-0-0-0-0-1.html
         /// </summary>
@@ -183,11 +190,11 @@ namespace ComicCrawler
                 Console.WriteLine("Page had no content {0}", crawledPage.Uri.AbsoluteUri);
             else
             {
-                CrawlerComicInfo(crawledPage);
+                CrawlerComic(crawledPage);
             }
         }
 
-        private void CrawlerComicInfo(CrawledPage page)
+        private void CrawlerComic(CrawledPage page)
         {
             if (page == null || string.IsNullOrEmpty(page.Content.Text))
             {
@@ -272,6 +279,148 @@ namespace ComicCrawler
 
         #endregion
 
+        #region "Crawling with HtmlAgilityPack"
+        private void CrawComicWithHtmlAgilityPack()
+        {
+
+        }
+        #endregion
+
+        #region "Crawling Comic"
+
+        private void PrepareCrawlForComic()
+        {
+            PrintDisclaimer();
+            foreach (var uriToCrawl in m_BCL.GetCategoryIndexerUri())
+            {
+                IWebCrawler crawler;
+                crawler = GetManuallyConfiguredWebCrawlerForComic();
+                //This is a synchronous call
+                CrawlResult result = crawler.Crawl(uriToCrawl);
+            }
+            PrintDisclaimer();
+        }
+
+        private IWebCrawler GetManuallyConfiguredWebCrawlerForComic()
+        {
+
+            // Create a config object manually
+            CrawlConfiguration config = new CrawlConfiguration();
+            config.CrawlTimeoutSeconds = 0;
+            config.DownloadableContentTypes = "text/html";
+            config.IsExternalPageCrawlingEnabled = false;
+            config.IsExternalPageLinksCrawlingEnabled = false;
+            config.IsRespectRobotsDotTextEnabled = false;
+            config.IsUriRecrawlingEnabled = false;
+            config.MaxConcurrentThreads = 5;
+            config.MaxPagesToCrawl = 0;
+            config.MaxPagesToCrawlPerDomain = 0;
+            config.MinCrawlDelayPerDomainMilliSeconds = 30000;
+
+
+            config.MaxCrawlDepth = 0;
+
+            IWebCrawler crawler = new PoliteWebCrawler(config, null, null, null, null, null, null, null, null);
+
+            //Register a lambda expression that will make Abot not crawl any url that has the word "ghost" in it.
+            //For example http://a.com/ghost, would not get crawled if the link were found during the crawl.
+            //If you set the log4net log level to "DEBUG" you will see a log message when any page is not allowed to be crawled.
+            //NOTE: This is lambda is run after the regular ICrawlDecsionMaker.ShouldCrawlPage method is run.
+            crawler.ShouldCrawlPage((pageToCrawl, crawlContext) =>
+            {
+                if (pageToCrawl.IsRoot)   // ignore web page if it's not a root
+                    return new CrawlDecision { Allow = true, Reason = "crawling page indexer and comic link only" };
+
+                return new CrawlDecision { Allow = false, Reason = "Pass through any other LINKs" };
+            });
+
+            crawler.PageCrawlCompletedAsync += crawlerComic_ProcessPageCrawlCompleted;
+
+
+            return crawler;
+        }
+
+        private void crawlerComic_ProcessPageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
+        {
+            CrawledPage crawledPage = e.CrawledPage;
+
+            if (string.IsNullOrEmpty(crawledPage.Content.Text))
+                Console.WriteLine("Page had no content {0}", crawledPage.Uri.AbsoluteUri);
+            else if (crawledPage.IsRoot)
+            {
+                Console.WriteLine("Page is root URL {0}, start crawling", crawledPage.Uri.AbsoluteUri);
+                CrawlerComicFromCategoryPage(crawledPage);
+            }
+            else
+            {
+                Console.WriteLine("Page is not root URL {0}, skipping crawling", crawledPage.Uri.AbsoluteUri);
+            }
+        }
+
+        private void CrawlerComicFromCategoryPage(CrawledPage page)
+        {
+            if (page == null || string.IsNullOrEmpty(page.Content.Text) || !page.IsRoot)
+            {
+                return;
+            }
+            //string uri = page.Uri.ToString();
+            int siteID = this.SiteID;
+
+            try
+            {
+
+                HtmlAgilityPack.HtmlDocument doc = new HtmlDocument();
+                doc.LoadHtml(page.Content.Text);
+
+                string xPathRoot = "/html[1]/body[1]/div[2]/div[1]/div[2]/div[1]/ul";
+
+
+                var rootNode = doc.DocumentNode.SelectSingleNode(xPathRoot);
+                if (rootNode != null)
+                {
+                    var liNodes = rootNode.SelectNodes("li");
+                    if (liNodes != null && liNodes.Count > 0)
+                    {
+                        foreach (var node in liNodes)
+                        {
+                            string title = node.SelectSingleNode("span[1]/h3[1]/a[1]")
+                                ?.InnerText;
+                            string author = node.SelectSingleNode("span[1]/p[1]")?.InnerText;
+                            string category = node.SelectSingleNode("span[1]/p[2]")?.InnerText;
+                            string status = node.SelectSingleNode("span[1]/p[3]")?.InnerText;
+                            string lastModifiedChapter = node.SelectSingleNode("span[1]/p[4]")?.InnerText;
+
+                            string comicUrl = node.SelectSingleNode("a")
+                                ?.Attributes["href"]
+                                ?.Value;    // http://www.dmzj.com/info/wheretogo.html
+                            string icon = node.SelectSingleNode("a[1]/img")
+                                ?.Attributes["src"]
+                                ?.Value;    // http://images.dmzj.com/img/webpic/15/1473157857.jpg
+
+
+                            author = string.IsNullOrEmpty(author) ? string.Empty : author.Trim().Replace("作者：", "").Trim(); // 作者：漫画岛
+                            category = string.IsNullOrEmpty(author) ? string.Empty : author.Trim().Replace("类型：", "").Trim(); // 类型：治愈/搞笑 
+                            status = string.IsNullOrEmpty(author) ? string.Empty : author.Trim().Replace("状态：", "").Trim(); // 状态：连载中
+                            lastModifiedChapter = string.IsNullOrEmpty(author) ? string.Empty : author.Trim().Replace("最新：", "").Trim(); // 最新：第02话
+
+                            Guid comicID = m_BCL.UpdateComic(siteID, comicUrl, lastModifiedChapter);
+                            m_BCL.UpdateComicComicDetail(comicID, title, author, !status.Contains("已完结"));
+
+                        }
+
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        #endregion
 
 
 

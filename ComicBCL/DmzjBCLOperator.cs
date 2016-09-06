@@ -211,8 +211,6 @@ namespace ComicBCL
             {
                 try
                 {
-
-
                     ComicDetails detail = (from r in m_DBEntity.ComicDetails where r.ComicID == comicID select r).FirstOrDefault();
 
                     if (detail != null)
