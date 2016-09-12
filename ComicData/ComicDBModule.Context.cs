@@ -20,11 +20,10 @@ namespace ComicData
         {
         }
     
-        protected override void OnModelCreating(DbModelBuilder modelBuilder) 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
-
 
         public void FixEfProviderServicesProblem()
         {
@@ -38,11 +37,11 @@ namespace ComicData
 
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<SiteCategory> SiteCategory { get; set; }
-        public virtual DbSet<Comic> Comic { get; set; }
         public virtual DbSet<ComicSite> ComicSite { get; set; }
         public virtual DbSet<Page> Page { get; set; }
         public virtual DbSet<SiteCategoryIndexer> SiteCategoryIndexer { get; set; }
         public virtual DbSet<ComicDetails> ComicDetails { get; set; }
         public virtual DbSet<Chapter> Chapter { get; set; }
+        public virtual DbSet<Comic> Comic { get; set; }
     }
 }

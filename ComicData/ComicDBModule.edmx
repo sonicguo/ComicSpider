@@ -35,13 +35,6 @@
           <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="ComicCategory">
-          <Property Name="ComicID" Type="uniqueidentifier" />
-          <Property Name="CategoryID" Type="int" />
-          <Property Name="SiteID" Type="int" />
-        </EntityType>-->
         <EntityType Name="ComicDetails">
           <Key>
             <PropertyRef Name="ComicID" />
@@ -96,18 +89,6 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
           <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <Association Name="FK_ComicTable_ComicTable">
-          <End Role="Comic" Type="Self.Comic" Multiplicity="1" />
-          <End Role="Comic1" Type="Self.Comic" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Comic">
-              <PropertyRef Name="ComicID" />
-            </Principal>
-            <Dependent Role="Comic1">
-              <PropertyRef Name="ComicID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="ComicSpiderDBModelStoreContainer">
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Chapter" EntityType="Self.Chapter" Schema="dbo" store:Type="Tables" />
@@ -117,10 +98,6 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
           <EntitySet Name="Page" EntityType="Self.Page" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteCategory" EntityType="Self.SiteCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteCategoryIndexer" EntityType="Self.SiteCategoryIndexer" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_ComicTable_ComicTable" Association="Self.FK_ComicTable_ComicTable">
-            <End Role="Comic" EntitySet="Comic" />
-            <End Role="Comic1" EntitySet="Comic" />
-          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -148,28 +125,13 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
         <EntityContainer Name="ComicSpiderDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Category" EntityType="Self.Category" />
           <EntitySet Name="SiteCategory" EntityType="Self.SiteCategory" />
-          <EntitySet Name="Comic" EntityType="ComicSpiderDBModel.Comic" />
           <EntitySet Name="ComicSite" EntityType="ComicSpiderDBModel.ComicSite" />
-          <AssociationSet Name="FK_ComicTable_ComicTable1" Association="ComicSpiderDBModel.FK_ComicTable_ComicTable1">
-            <End Role="Comic" EntitySet="Comic" />
-            <End Role="Comic1" EntitySet="Comic" />
-          </AssociationSet>
           <EntitySet Name="Page" EntityType="ComicSpiderDBModel.Page" />
           <EntitySet Name="SiteCategoryIndexer" EntityType="ComicSpiderDBModel.SiteCategoryIndexer" />
           <EntitySet Name="ComicDetails" EntityType="ComicSpiderDBModel.ComicDetails" />
           <EntitySet Name="Chapter" EntityType="ComicSpiderDBModel.Chapter" />
+          <EntitySet Name="Comic" EntityType="ComicSpiderDBModel.Comic" />
         </EntityContainer>
-        <EntityType Name="Comic">
-          <Key>
-            <PropertyRef Name="ComicID" />
-          </Key>
-          <Property Name="ComicID" Type="Guid" Nullable="false" />
-          <Property Name="SiteID" Type="Int32" Nullable="false" />
-          <Property Name="URL" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Comic1" Relationship="ComicSpiderDBModel.FK_ComicTable_ComicTable1" FromRole="Comic" ToRole="Comic1" />
-          <NavigationProperty Name="Comic2" Relationship="ComicSpiderDBModel.FK_ComicTable_ComicTable1" FromRole="Comic1" ToRole="Comic" />
-        </EntityType>
         <EntityType Name="ComicSite">
           <Key>
             <PropertyRef Name="SiteID" />
@@ -179,18 +141,6 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
           <Property Name="URL" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
-        <Association Name="FK_ComicTable_ComicTable1">
-          <End Type="ComicSpiderDBModel.Comic" Role="Comic" Multiplicity="1" />
-          <End Type="ComicSpiderDBModel.Comic" Role="Comic1" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Comic">
-              <PropertyRef Name="ComicID" />
-            </Principal>
-            <Dependent Role="Comic1">
-              <PropertyRef Name="ComicID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Page">
           <Key>
             <PropertyRef Name="PageGUID" />
@@ -238,6 +188,15 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
           <Property Name="TotalPage" Type="Int32" Nullable="false" />
           <Property Name="OrderValue" Type="Int32" />
         </EntityType>
+        <EntityType Name="Comic">
+          <Key>
+            <PropertyRef Name="ComicID" />
+          </Key>
+          <Property Name="ComicID" Type="Guid" Nullable="false" />
+          <Property Name="SiteID" Type="Int32" Nullable="false" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -261,16 +220,6 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
                 <ScalarProperty Name="SiteID" ColumnName="SiteID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Comic">
-            <EntityTypeMapping TypeName="ComicSpiderDBModel.Comic">
-              <MappingFragment StoreEntitySet="Comic">
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="URL" ColumnName="URL" />
-                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
-                <ScalarProperty Name="ComicID" ColumnName="ComicID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -330,6 +279,16 @@ warning 6013: The table/view 'ComicSpiderDB.dbo.ComicCategory' does not have a p
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ComicID" ColumnName="ComicID" />
                 <ScalarProperty Name="ChapterGUID" ColumnName="ChapterGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Comic">
+            <EntityTypeMapping TypeName="ComicSpiderDBModel.Comic">
+              <MappingFragment StoreEntitySet="Comic">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+                <ScalarProperty Name="ComicID" ColumnName="ComicID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

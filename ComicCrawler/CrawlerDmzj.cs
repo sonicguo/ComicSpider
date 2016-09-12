@@ -82,11 +82,6 @@ namespace ComicCrawler
         }
 
 
-        public override void CrawlComicChapterPage()
-        {
-            throw new NotImplementedException();
-        }
-
 
 
 
@@ -196,7 +191,7 @@ namespace ComicCrawler
 
                             if (string.IsNullOrEmpty(chapterName) || string.IsNullOrEmpty(chapterURL)) { continue; }
 
-                            m_BCL.UpdateChapter(comicID, chapterName, chapterURL, chapterDesc, totalPage);
+                            m_BCL.UpdateChapter(comicID, chapterName, chapterURL, chapterDesc,0, totalPage);
                         }
                     }
                 }
@@ -365,14 +360,12 @@ namespace ComicCrawler
         public override void CrawlComicChapter()
         {
             PrepareCrawlForChapter();
-
-
         }
 
         private void PrepareCrawlForChapter()
         {
             PrintDisclaimer();
-            foreach (var uriToCrawl in m_BCL.GetCategoryIndexerUri())
+            foreach (var uriToCrawl in m_BCL.GetComicUri())
             {
                 IWebCrawler crawler;
                 crawler = GetManuallyConfiguredWebCrawler();
@@ -447,11 +440,10 @@ namespace ComicCrawler
 
             string uri = page.Uri.ToString();
             int siteID = this.SiteID;
-            string description = "";
+            //string description = "";
 
             try
             {
-
 
                 HtmlAgilityPack.HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(page.Content.Text);
@@ -489,7 +481,7 @@ namespace ComicCrawler
 
                             if (string.IsNullOrEmpty(chapterName) || string.IsNullOrEmpty(chapterURL)) { continue; }
 
-                            m_BCL.UpdateChapter(comicID, chapterName, chapterURL, chapterDesc, totalPage);
+                            m_BCL.UpdateChapter(comicID, chapterName, chapterURL, chapterDesc, i+1, totalPage);
                         }
                     }
                 }
@@ -503,5 +495,49 @@ namespace ComicCrawler
 
         #endregion
 
+        #region "Crawing Page"
+
+        public override void CrawlComicChapterPage()
+        {
+            
+            foreach (var item in m_BCL.GetChapterURL(this.SiteID))
+            {
+
+            }
+        }
+
+        private void CrawlComicChapterPage(string chapterUrl)
+        {
+
+        }
+
+        public void CrawPageTest()
+        {
+            HtmlAgilityPack.HtmlWeb web = new HtmlWeb();
+            
+            HtmlAgilityPack.HtmlDocument doc = web.Load(@"http://localhost/eval.html");
+
+            var nodes = doc.DocumentNode;
+
+            
+
+
+        }
+
+        //private void PrepareCrawlForChapter()
+        //{
+        //    PrintDisclaimer();
+        //    foreach (var uriToCrawl in m_BCL.GetComicUri())
+        //    {
+        //        IWebCrawler crawler;
+        //        crawler = GetManuallyConfiguredWebCrawler();
+        //        //This is a synchronous call
+        //        CrawlResult result = crawler.Crawl(uriToCrawl);
+        //    }
+        //    PrintDisclaimer();
+        //}
+
+
+        #endregion
     }
 }

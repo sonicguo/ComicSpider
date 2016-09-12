@@ -18,8 +18,5 @@ namespace ComicData
         public int SiteID { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }
-    
-        public virtual Comic Comic1 { get; set; }
-        public virtual Comic Comic2 { get; set; }
     }
 }

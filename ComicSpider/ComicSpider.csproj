@@ -109,6 +109,10 @@
       <Project>{47700a74-867c-4f2e-898b-65ff973513da}</Project>
       <Name>ComicData</Name>
     </ProjectReference>
+    <ProjectReference Include="..\JSExecutionEngine\JSExecutionEngine.csproj">
+      <Project>{1b066c82-c546-4692-98b3-4db59f64a14e}</Project>
+      <Name>JSExecutionEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\packages\PhantomJS.2.0.0\tools\phantomjs\phantomjs.exe">

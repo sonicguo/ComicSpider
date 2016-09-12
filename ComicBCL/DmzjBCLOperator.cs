@@ -45,8 +45,6 @@ namespace ComicBCL
             InitializeSiteCategoryIndexerTable();
         }
 
-
-
         public void UpdateCategoary(string cateName, string cateURL)
         {
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
@@ -98,7 +96,9 @@ namespace ComicBCL
             List<Uri> uris = new List<Uri>();
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
-                var result = GetSiteCategoryIndexerListFromDB();
+                var result = from r in m_DBEntity.SiteCategoryIndexer
+                             where r.SiteID == SiteInfo.SiteID
+                             select r.URL;
 
                 foreach (var item in result)
                 {
@@ -106,6 +106,40 @@ namespace ComicBCL
                 }
             }
             return uris;
+        }
+
+        public List<Uri> GetComicUri()
+        {
+            List<Uri> uris = new List<Uri>();
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+                var result = from r in m_DBEntity.Comic select r.URL;
+
+                foreach (var item in result)
+                {
+                    uris.Add(new Uri(item));
+                }
+            }
+            return uris;
+        }
+
+        public List<Chapter> GetChapterList()
+        {
+            List<Chapter> list = new List<Chapter>();
+            int siteID = this.SiteInfo.SiteID;
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+                var result = (from r in m_DBEntity.Chapter
+                              from l in m_DBEntity.Comic
+                              orderby r.ComicID
+                              orderby r.OrderValue ascending
+                              where l.SiteID == siteID
+                              where l.ComicID == r.ComicID
+                              select r).ToList<Chapter>();
+
+                list = result;
+            }
+            return list;
         }
 
         #endregion
@@ -242,7 +276,7 @@ namespace ComicBCL
             }
         }
 
-        public Guid UpdateChapter(Guid comicID, string name, string url, string description, int totalPage )
+        public Guid UpdateChapter(Guid comicID, string name, string url, string description,int orderValue, int totalPage )
         {
             Guid chapterID = new Guid();
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
@@ -259,6 +293,7 @@ namespace ComicBCL
                         chapter.Name = name;
                         chapter.URL = url;
                         chapter.Description = description;
+                        chapter.OrderValue = orderValue;
                         chapter.TotalPage = totalPage;
 
                         m_DBEntity.SaveChanges();
@@ -271,6 +306,7 @@ namespace ComicBCL
                         chapter.Name = name;
                         chapter.URL = url;
                         chapter.Description = description;
+                        chapter.OrderValue = orderValue;
                         chapter.TotalPage = totalPage;
 
                         m_DBEntity.Chapter.Add(chapter);
@@ -290,10 +326,35 @@ namespace ComicBCL
 
         public Guid GetComicID(int siteID, Uri uri)
         {
+            Guid comicID = Guid.Empty;
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
-                return (from r in m_DBEntity.Comic where r.SiteID == siteID where r.URL == uri.ToString() select r.ComicID).SingleOrDefault();
+                string uriStr = uri.ToString();
+                var res = (from r in m_DBEntity.Comic
+                           where r.URL == uriStr
+                           where r.SiteID == siteID
+                           select r).FirstOrDefault();
+
+                if (res != null)
+                {
+                    comicID = res.ComicID;
+                }
             }
+
+            return comicID;
+        }
+
+
+        public List<string> GetChapterURL(int siteID)
+        {
+            List<string> uris = new List<string>();
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+                var result = from r in m_DBEntity.Chapter select r.URL;
+
+
+            }
+            return uris;
         }
 
         #endregion
