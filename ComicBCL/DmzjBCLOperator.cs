@@ -142,6 +142,55 @@ namespace ComicBCL
             return list;
         }
 
+        public void UpdatePage(Guid pageGUID, Guid ChapterGUID, int PageID, string URL, string Description, int OrderValue)
+        {
+            using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
+            {
+                //var pg = (from r
+                //         in m_DBEntity.Page
+                //          where r.ChapterGUID == ChapterGUID
+                //          where r.URL == URL
+                //          select r).FirstOrDefault();
+
+                //if (pg != null 
+                //    && (pg.PageGUID != null || pg.PageGUID != Guid.Empty)
+                //    && pg.PageGUID.ToString() == pageGUID.ToString())
+                //{
+
+                //}
+
+                if (pageGUID == null || pageGUID == Guid.Empty)
+                {
+                    Page page = new Page();
+
+                    page.PageGUID = Guid.NewGuid();
+                    page.ChapterGUID = ChapterGUID;
+                    page.PageID = PageID;
+                    page.Description = Description;
+                    page.URL = URL;
+                    page.OrderValue = OrderValue;
+
+                    m_DBEntity.Page.Add(page);
+                    m_DBEntity.SaveChanges();
+                }
+                else
+                {
+                    string pGUID = pageGUID.ToString();
+                    var p = (from r in m_DBEntity.Page
+                             where r.PageGUID == pageGUID
+                             select r).SingleOrDefault();
+
+                    p.ChapterGUID = ChapterGUID;
+                    p.PageID = PageID;
+                    p.URL = URL;
+                    p.Description = Description;
+                    p.OrderValue = OrderValue;
+                    m_DBEntity.SaveChanges();
+
+                }
+            }
+        }
+
         #endregion
 
 
@@ -276,16 +325,23 @@ namespace ComicBCL
             }
         }
 
-        public Guid UpdateChapter(Guid comicID, string name, string url, string description,int orderValue, int totalPage )
+        public Guid UpdateChapter(Guid comicID, string name, string url, string description, int orderValue, int totalPage)
         {
-            Guid chapterID = new Guid();
+           return UpdateChapter(Guid.Empty, comicID, name, url, description, orderValue, totalPage);
+        }
+
+        public Guid UpdateChapter(Guid ChapterGUID, Guid comicID, string name, string url, string description, int orderValue, int totalPage)
+        {
+
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
-                
+                Chapter chapter = null;
                 try
                 {
-
-                    var chapter = (from r in m_DBEntity.Chapter where r.ComicID == comicID where r.Name == name select r).FirstOrDefault();
+                    if (ChapterGUID == null || ChapterGUID == Guid.Empty)
+                    {
+                        chapter = (from r in m_DBEntity.Chapter where r.ChapterGUID == ChapterGUID where r.Name == name select r).SingleOrDefault();
+                    }
 
                     if (chapter != null)
                     {
@@ -313,7 +369,7 @@ namespace ComicBCL
                         m_DBEntity.SaveChanges();
                     }
 
-                    chapterID = chapter.ChapterGUID;
+                    ChapterGUID = chapter.ChapterGUID;
                 }
                 catch (Exception ex)
                 {
@@ -321,7 +377,7 @@ namespace ComicBCL
                     //throw ex; // TODO : capture and log excpetion
                 }
             }
-            return chapterID;
+            return ChapterGUID;
         }
 
         public Guid GetComicID(int siteID, Uri uri)
@@ -351,8 +407,6 @@ namespace ComicBCL
             using (var m_DBEntity = new ComicData.ComicSpiderDBEntities())
             {
                 var result = from r in m_DBEntity.Chapter select r.URL;
-
-
             }
             return uris;
         }

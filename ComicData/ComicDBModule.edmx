@@ -49,6 +49,7 @@
           <Property Name="Tweet" Type="decimal" Precision="18" Scale="0" />
           <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="ComicName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ComicIDOrg" Type="int" />
         </EntityType>
         <EntityType Name="ComicSite">
           <Key>
@@ -68,6 +69,7 @@
           <Property Name="PageID" Type="int" Nullable="false" />
           <Property Name="URL" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="OrderValue" Type="int" />
         </EntityType>
         <EntityType Name="SiteCategory">
           <Key>
@@ -150,6 +152,7 @@
           <Property Name="PageID" Type="Int32" Nullable="false" />
           <Property Name="URL" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OrderValue" Type="Int32" />
         </EntityType>
         <EntityType Name="SiteCategoryIndexer">
           <Key>
@@ -174,6 +177,7 @@
           <Property Name="Tweet" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ComicName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ComicIDOrg" Type="Int32" />
         </EntityType>
         <EntityType Name="Chapter">
           <Key>
@@ -236,6 +240,7 @@
           <EntitySetMapping Name="Page">
             <EntityTypeMapping TypeName="ComicSpiderDBModel.Page">
               <MappingFragment StoreEntitySet="Page">
+                <ScalarProperty Name="OrderValue" ColumnName="OrderValue" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="URL" ColumnName="URL" />
                 <ScalarProperty Name="PageID" ColumnName="PageID" />
@@ -256,6 +261,7 @@
           <EntitySetMapping Name="ComicDetails">
             <EntityTypeMapping TypeName="ComicSpiderDBModel.ComicDetails">
               <MappingFragment StoreEntitySet="ComicDetails">
+                <ScalarProperty Name="ComicIDOrg" ColumnName="ComicIDOrg" />
                 <ScalarProperty Name="ComicName" ColumnName="ComicName" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Tweet" ColumnName="Tweet" />
